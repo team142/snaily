@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/jackc/pgx"
-	"github.com/just1689/hotpotato/model"
 	"github.com/sirupsen/logrus"
+	"github.com/team142/snaily/model"
 )
 
 func InsertMembership(conn *pgx.Conn, item *model.Membership) (err error) {
