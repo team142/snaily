@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"github.com/team142/snaily/api"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,15 +19,11 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", handleHome)
-	router.HandleFunc("/api/", handleAPI)
+	router.HandleFunc("/api/", api.HandleIncoming)
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(StaticDir))))
 
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
-}
-
-func handleAPI(w http.ResponseWriter, r *http.Request) {
-	//TODO: implement
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
