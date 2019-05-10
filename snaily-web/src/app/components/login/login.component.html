@@ -1,25 +1,41 @@
 <div class="container">
   <div class="row">
     <div class="animated bounceInLeft col-sm-6">
-      <div class="card border-secondary mb-6" style="max-width: 30rem; height: 302px;">
-        <div class="card-header">Login</div>
+      <div class="card border-secondary mb-6" style="max-width: 30rem; height: 352px;">
+
         <div class="card-body">
           <h4 class="card-title">
-            <img width="128" src="./assets/icon.png">&nbsp; Single sign-on</h4>
+            <img width="128" src="./assets/snaily.png">&nbsp; Existing users</h4>
+
+          <div class="form-group row">
+            <label for="rEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="rEmail" value=""/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="rPassword" class="col-sm-3 col-form-label">Password</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="rPassword" value=""/>
+            </div>
+          </div>
+
           <p class="card-text" align="center">
-            <button (click)="login()" type="button" class="btn btn-warning">Login</button>&nbsp;
+            <button (click)="login()" type="button" class="btn btn-outline-primary">Login</button>&nbsp;
           </p>
         </div>
       </div>
     </div>
     <div class="animated bounceInRight col-sm-6">
       <div class="card border-secondary mb-6" style="max-width: 30rem; height: 302px;">
-        <div class="card-header">Register</div>
+
         <div class="card-body">
           <h4 class="card-title">
-            <img width="128" src="./assets/guest.png">&nbsp; Register here</h4>
+            <img width="128" src="./assets/snaily.png"
+                 style="-webkit-transform:rotate(180deg); -moz-transform: rotate(180deg); -ms-transform: rotate(180deg); -o-transform: rotate(180deg); transform: rotate(180deg);">&nbsp;
+            Register here</h4>
           <p class="card-text" align="center">
-            <button (click)="login()" type="button" class="btn btn-warning">Register</button>&nbsp;
+            <button (click)="login()" type="button" class="btn btn-outline-primary">Register</button>&nbsp;
           </p>
         </div>
       </div>
