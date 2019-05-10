@@ -14,6 +14,8 @@ var addr = flag.String("address", ":8080", "")
 const StaticDir = "web/static/"
 
 func main() {
+	flag.Parse()
+
 	router := mux.NewRouter()
 	router.HandleFunc("/", handleHome)
 	router.HandleFunc("/api/", handleAPI)
