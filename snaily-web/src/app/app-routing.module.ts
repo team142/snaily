@@ -1,10 +1,11 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {BrowseComponent} from './components/browse/browse.component';
+import {ViewComponent} from './components/view/view.component';
 import {LoginComponent} from './components/login/login.component';
 import {WelcomeComponent} from './components/welcome/welcome.component';
-import {AccountComponent} from './components/account/account.component';
+import {HomeComponent} from './components/home/home.component';
 import {HelpComponent} from './components/help/help.component';
+import {NewComponent} from './components/new/new.component';
 
 
 const routes: Routes = [
@@ -17,12 +18,16 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'browse',
-    component: BrowseComponent
+    path: 'view',
+    component: ViewComponent
   },
   {
-    path: 'account',
-    component: AccountComponent
+    path: 'home',
+    component: HomeComponent
+  },
+  {
+    path: 'new',
+    component: NewComponent
   },
   {
     path: 'help',
@@ -37,4 +42,4 @@ const routes: Routes = [
 export class AppRoutingModule {
 }
 
-export const routedComponents = [HelpComponent, LoginComponent, BrowseComponent, WelcomeComponent, AccountComponent];
+export const routedComponents = [HelpComponent, LoginComponent, ViewComponent, WelcomeComponent, HomeComponent, NewComponent];
