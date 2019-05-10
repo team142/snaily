@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { UserState} from '../../model/state/userState'
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {UserState} from '../../model/state/userState';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -10,15 +10,16 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
   }
 
   public login() {
-    UserState.login()
-    let link = ['./home'];
-    this.router.navigate(link);    
+    UserState.login();
+    const link = ['./home'];
+    this.router.navigate(link);
   }
 
 }
