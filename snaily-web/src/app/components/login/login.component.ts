@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   public login() {
     UserState.login()
-    let link = ['./account'];
+    let link = ['./home'];
     this.router.navigate(link);    
   }
 

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-browse',
-  templateUrl: './browse.component.html',
-  styleUrls: ['./browse.component.css']
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.css']
 })
-export class BrowseComponent implements OnInit {
+export class ViewComponent implements OnInit {
 
   constructor() { }
 
