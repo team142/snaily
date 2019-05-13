@@ -17,7 +17,6 @@ export class WelcomeComponent implements OnInit {
     if (UserState.isLoggedIn()) {
       const link = ['./home'];
       this.router.navigate(link);
-
     }
 
   }
