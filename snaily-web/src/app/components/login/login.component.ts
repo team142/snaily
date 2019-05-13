@@ -14,6 +14,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (UserState.isLoggedIn()) {
+      const link = ['./home'];
+      this.router.navigate(link);
+    }
+
   }
 
   public login() {

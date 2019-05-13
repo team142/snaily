@@ -7,10 +7,10 @@ import (
 )
 
 var DatabaseHost = flag.String("pghost", "localhost", "PG hostname")
-var DatabaseUser = flag.String("pguser", "postgres", "PG username")
+var DatabaseUser = flag.String("pguser", "snaily", "PG username")
 var DatabasePassword = flag.String("pgpassword", "snaily", "PG password")
 var DatabaseDatabase = "madast"
-var Port = flag.Uint64("pgport", 3000, "PG port")
+var Port = flag.Uint64("pgport", 5000, "PG port")
 
 func Connect() (conn *pgx.Conn, err error) {
 	conn, err = pgx.Connect(pgx.ConnConfig{
