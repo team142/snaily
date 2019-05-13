@@ -9,7 +9,7 @@ RUN npm install -g @angular/cli
 RUN mkdir /src
 WORKDIR /src
 COPY . .
-RUN rm -rf /src/dist/*
+WORKDIR /src/snaily-web
 RUN chmod -R 777 ./
 RUN npm i
 RUN ls -la
