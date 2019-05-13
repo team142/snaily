@@ -12,6 +12,7 @@ COPY . .
 RUN rm -rf /src/dist/*
 RUN chmod -R 777 ./
 RUN npm i
+RUN ls -la
 RUN ng build
 
 
