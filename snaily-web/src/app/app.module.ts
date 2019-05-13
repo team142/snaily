@@ -13,11 +13,6 @@ import {WelcomeComponent} from './components/welcome/welcome.component';
 import {HomeComponent} from './components/home/home.component';
 import {NewComponent} from './components/new/new.component';
 import {HelpComponent} from './components/help/help.component';
-import {ApiComponent} from './components/api/api.component';
-import {ApiIssuesComponent} from './components/api/api-issues/api-issues.component';
-import {ApiDocsComponent} from './components/api/api-docs/api-docs.component';
-import {ApiAccessComponent} from './components/api/api-access/api-access.component';
-import {ApiVersionsComponent} from './components/api/api-versions/api-versions.component';
 import {ViewComponent} from './components/view/view.component';
 
 // import './rxjs-extensions';
@@ -30,12 +25,7 @@ import {ViewComponent} from './components/view/view.component';
     HomeComponent,
     NewComponent,
     ViewComponent,
-    HelpComponent,
-    ApiComponent,
-    ApiIssuesComponent,
-    ApiDocsComponent,
-    ApiAccessComponent,
-    ApiVersionsComponent
+    HelpComponent
   ],
   imports: [
     NgbModule.forRoot(),
