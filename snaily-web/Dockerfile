@@ -21,5 +21,5 @@ FROM nginx:1.16.0 as final
 RUN rm -rf /etc/nginx/conf.d/*
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /src/snaily-web/dist/snaily-web /usr/share/nginx/html/
-RUN COPY snaily-web/default.conf /etc/nginx/conf.d/
+COPY snaily-web/default.conf /etc/nginx/conf.d/
 CMD ["nginx", "-g", "daemon off;"]
