@@ -12,5 +12,13 @@ export class UserState {
     localStorage.setItem('login', 'false');
   }
 
+  public static setKey(v: string) {
+    localStorage.setItem('key', v);
+  }
+
+  public static getKey(): string {
+    return localStorage.getItem('key');
+  }
+
 
 }
