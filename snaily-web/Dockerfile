@@ -1,3 +1,7 @@
+#
+# Multi-stage build for Angular app
+#
+
 
 # Build in a node container
 FROM node:12-alpine as builder
