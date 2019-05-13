@@ -9,8 +9,10 @@ RUN npm install -g @angular/cli
 RUN mkdir /src
 WORKDIR /src
 COPY . .
-RUN rm -rf /src/dist/*
+WORKDIR /src/snaily-web
+RUN chmod -R 777 ./
 RUN npm i
+RUN ls -la
 RUN ng build
 
 
@@ -18,6 +20,6 @@ RUN ng build
 FROM nginx:1.16.0 as final
 RUN rm -rf /etc/nginx/conf.d/*
 RUN rm -rf /usr/share/nginx/html/*
-COPY --from=builder /src/dist/snaily-web /usr/share/nginx/html/
-COPY default.conf /etc/nginx/conf.d/
+COPY --from=builder /src/snaily-web/dist/snaily-web /usr/share/nginx/html/
+COPY snaily-web/default.conf /etc/nginx/conf.d/
 CMD ["nginx", "-g", "daemon off;"]
