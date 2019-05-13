@@ -10,6 +10,7 @@ RUN mkdir /src
 WORKDIR /src
 COPY . .
 RUN rm -rf /src/dist/*
+RUN chmod -R 777 ./
 RUN npm i
 RUN ng build
 
