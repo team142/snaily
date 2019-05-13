@@ -1,17 +1,16 @@
 export class UserState {
 
-  private static loggedIn = false;
-
   public static isLoggedIn(): boolean {
-    return this.loggedIn;
+    return localStorage.getItem('login') === 'true';
   }
 
   public static login() {
-    this.loggedIn = true;
+    localStorage.setItem('login', 'true');
   }
 
   public static logout() {
-    this.loggedIn = false;
+    localStorage.setItem('login', 'false');
   }
+
 
 }
