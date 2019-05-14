@@ -6,6 +6,8 @@ import {MessageRegisterRequestV1} from '../../model/register-request-v1';
 import {MessageLoginRequestV1} from '../../model/login-request-v1';
 import {LoginService} from '../../services/login.service';
 
+declare var Swal: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,8 +18,8 @@ export class LoginComponent implements OnInit {
   private registerReq: MessageRegisterRequestV1;
   private loginReq: MessageLoginRequestV1;
 
-  private themeRegister = 'animated bounceInRight';
-  private themeLogin = 'animated bounceInLeft';
+  private themeRegister = 'animated fadeIn';
+  private themeLogin = 'animated fadeIn';
 
   constructor(private router: Router, private registerService: RegisterService, private loginService: LoginService) {
     this.registerReq = new MessageRegisterRequestV1();
@@ -30,34 +32,74 @@ export class LoginComponent implements OnInit {
 
   private amILoggedIn(): void {
     if (UserState.isLoggedIn()) {
-      const link = ['./home'];
-      this.router.navigate(link);
+      this.router.navigate(['./home']);
     }
   }
 
   public register() {
-    this.themeRegister = 'animated bounceOutRight';
+    this.themeRegister = 'animated fadeOut';
 
-    this.registerService.post(this.registerReq, (result) => {
-      alert('Ok. Next you must login');
-    }, (error) => {
-      alert('Could not register? Maybe you\'re already a user?');
-    });
+    this.registerService.post(this.registerReq
+      , (result) => {
+
+        if (result.ok === false) {
+          Swal.fire({
+            position: 'middle-end',
+            type: 'error',
+            title: 'Could not register',
+            showConfirmButton: true,
+          });
+          this.flyIn();
+          return;
+        }
+
+        Swal.fire({
+          position: 'middle-end',
+          type: 'success',
+          title: 'Registered',
+          showConfirmButton: false,
+          timer: 1300
+        });
+
+      }, (error) => {
+        Swal.fire({
+          position: 'middle-end',
+          type: 'error',
+          title: 'System problem: Could not register',
+          showConfirmButton: true,
+        });
+      });
 
   }
 
   public login() {
+
     this.flyOut();
-
-
     this.loginService.post(this.loginReq, (result) => {
       if (result.ok === true) {
         UserState.login();
         UserState.setKey(result.key);
-        console.log(result.key);
+
+        Swal.fire({
+          position: 'middle-end',
+          type: 'success',
+          title: 'Welcome',
+          showConfirmButton: false,
+          timer: 1300
+        });
+
+
       } else {
-        alert('Authentication failed');
-        this.flyIn();
+        setTimeout(() => {
+          this.flyIn();
+        }, 1000);
+
+        Swal.fire({
+          position: 'middle-end',
+          type: 'error',
+          title: 'Incorrect email or password',
+          showConfirmButton: true,
+        });
       }
 
     }, (error) => {
@@ -72,14 +114,14 @@ export class LoginComponent implements OnInit {
   }
 
   private flyOut() {
-    this.themeRegister = 'animated bounceOutRight';
-    this.themeLogin = 'animated bounceOutLeft';
+    this.themeRegister = 'animated fadeOut';
+    this.themeLogin = 'animated fadeOut';
 
   }
 
   private flyIn() {
-    this.themeRegister = 'animated bounceInRight';
-    this.themeLogin = 'animated bounceInLeft';
+    this.themeRegister = 'animated fadeIn';
+    this.themeLogin = 'animated fadeIn';
 
   }
 
