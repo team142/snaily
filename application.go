@@ -11,32 +11,28 @@ import (
 )
 
 var addr = flag.String("address", ":8080", "")
-
-const StaticDir = "web/static/"
-
-var rp = buildRP()
+var addrToProxy = flag.String("proxy", "http://localhost:4200", "The url of the angular app to reverse proxy")
 
 func main() {
 	flag.Parse()
 
 	router := mux.NewRouter()
+
+	//Handles all API calls
 	router.PathPrefix("/api").HandlerFunc(api.HandleIncoming)
-	router.PathPrefix("/").HandlerFunc(handleHome)
+
+	//Handles everything else
+	router.PathPrefix("/").HandlerFunc(buildHomeRouter())
+
+	//The server
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-func buildRP() *httputil.ReverseProxy {
-	u, err := url.Parse("http://localhost:4200")
-	if err != nil {
-		panic(err)
+func buildHomeRouter() func(w http.ResponseWriter, r *http.Request) {
+	u, _ := url.Parse(*addrToProxy)
+	rp := httputil.NewSingleHostReverseProxy(u)
+	return func(w http.ResponseWriter, r *http.Request) {
+		rp.ServeHTTP(w, r)
 	}
-	return httputil.NewSingleHostReverseProxy(u)
-
-}
-
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	rp.ServeHTTP(w, r)
-	//w.Write([]byte("1"))
-	return
 }
