@@ -1,9 +1,6 @@
 # snaily
 
-
-
-# Note #
-The Go program proxies the Angular app.
+Note :: The Go program proxies the Angular app.
 
 ## Installing
 
