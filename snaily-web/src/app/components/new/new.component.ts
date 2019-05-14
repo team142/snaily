@@ -13,16 +13,24 @@ export class NewComponent implements OnInit {
   private email: string;
   private body: string;
   private title: string;
-  private theme = 'bg-dark';
+  private day: number;
+  private nmonth: number;
+  private year: number;
+  private hour: number;
+  private minute: number;
+
+
+  private theme = '';
 
   constructor(private router: Router) {
   }
 
   ngOnInit() {
+    this.setTimeAsNow();
   }
 
   public request(): void {
-    this.theme = 'bg-dark animated flipOutX';
+    this.theme = 'animated flipOutX';
 
     setTimeout(() => {
         this.save();
@@ -52,16 +60,8 @@ export class NewComponent implements OnInit {
         result.dismiss === Swal.DismissReason.timer
       ) {
         this.theme = 'bg-success animated flipInX';
-
-
         setTimeout(() => {
-          Swal.fire({
-            position: 'middle-end',
-            type: 'success',
-            title: 'Saved',
-            showConfirmButton: false,
-            timer: 1800
-          });
+          this.savedSuccess();
         }, 1500);
 
         setTimeout(() => {
@@ -70,5 +70,30 @@ export class NewComponent implements OnInit {
 
       }
     });
+  }
+
+  private savedSuccess(): void {
+    Swal.fire({
+      position: 'middle-end',
+      type: 'success',
+      title: 'Saved',
+      showConfirmButton: false,
+      timer: 1800
+    });
+
+  }
+
+
+  private setTimeAsNow() {
+
+    const n = new Date();
+
+    this.nmonth = n.getUTCMonth();
+    this.year = n.getFullYear();
+
+    this.day = n.getUTCDate();
+    this.hour = n.getUTCHours();
+    this.minute = n.getUTCMinutes();
+
   }
 }
