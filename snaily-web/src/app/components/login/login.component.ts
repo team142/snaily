@@ -6,6 +6,8 @@ import {MessageRegisterRequestV1} from '../../model/register-request-v1';
 import {MessageLoginRequestV1} from '../../model/login-request-v1';
 import {LoginService} from '../../services/login.service';
 
+declare var Swal: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -30,8 +32,7 @@ export class LoginComponent implements OnInit {
 
   private amILoggedIn(): void {
     if (UserState.isLoggedIn()) {
-      const link = ['./home'];
-      this.router.navigate(link);
+      this.router.navigate(['./home']);
     }
   }
 
@@ -54,10 +55,27 @@ export class LoginComponent implements OnInit {
       if (result.ok === true) {
         UserState.login();
         UserState.setKey(result.key);
-        console.log(result.key);
+
+        Swal.fire({
+          position: 'middle-end',
+          type: 'success',
+          title: 'Welcome',
+          showConfirmButton: false,
+          timer: 1300
+        });
+
+
       } else {
-        alert('Authentication failed');
-        this.flyIn();
+        setTimeout(() => {
+          this.flyIn();
+        }, 1000);
+
+        Swal.fire({
+          position: 'middle-end',
+          type: 'error',
+          title: 'Incorrect email or password',
+          showConfirmButton: true,
+        });
       }
 
     }, (error) => {
