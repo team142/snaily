@@ -13,14 +13,18 @@ import (
 var addr = flag.String("address", ":8080", "")
 var addrToProxy = flag.String("proxy", "http://localhost:4200", "The url of the angular app to reverse proxy")
 
-const StaticDir = "web/static/"
-
 func main() {
 	flag.Parse()
 
 	router := mux.NewRouter()
+
+	//Handles all API calls
 	router.PathPrefix("/api").HandlerFunc(api.HandleIncoming)
+
+	//Handles everything else
 	router.PathPrefix("/").HandlerFunc(buildHomeRouter())
+
+	//The server
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
