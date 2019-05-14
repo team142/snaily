@@ -17,6 +17,7 @@ import {NewComponent} from './components/new/new.component';
 import {HelpComponent} from './components/help/help.component';
 import {ViewComponent} from './components/view/view.component';
 import {HttpClient} from '@angular/common/http';
+import {LoginService} from './services/login.service';
 
 // import './rxjs-extensions';
 
@@ -39,7 +40,7 @@ import {HttpClient} from '@angular/common/http';
     HttpClientModule,
 
   ],
-  providers: [RegisterService, HttpClient],
+  providers: [RegisterService, HttpClient, LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

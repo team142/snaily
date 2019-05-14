@@ -10,13 +10,14 @@
           <div class="form-group row">
             <label for="lEmail" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="lEmail" value=""/>
+              <input type="text" class="form-control" id="lEmail" name="lEmail" [(ngModel)]="loginReq.email"/>
             </div>
           </div>
           <div class="form-group row">
             <label for="lPassword" class="col-sm-3 col-form-label">Password</label>
             <div class="col-sm-9">
-              <input type="password" class="form-control" id="lPassword" value=""/>
+              <input type="password" class="form-control" id="lPassword" name="lpassword"
+                     [(ngModel)]="loginReq.password"/>
             </div>
           </div>
 
@@ -44,7 +45,8 @@
           <div class="form-group row">
             <label for="rlastname" class="col-sm-3 col-form-label">Last name</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="rlastname" name="rPassword" [(ngModel)]="registerReq.lastname"/>
+              <input type="text" class="form-control" id="rlastname" name="rPassword"
+                     [(ngModel)]="registerReq.lastname"/>
             </div>
           </div>
 

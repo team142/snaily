@@ -17,6 +17,11 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.URL.Path == "/api/login" {
+		handleLoginUser(w, r)
+		return
+	}
+
 	msg := fmt.Sprint("Could not find route for ", r.URL.Path)
 	fmt.Println(msg)
 	w.Write([]byte(msg))

@@ -1,8 +1,7 @@
 package model
 
 import (
-	"fmt"
-	uuid "github.com/satori/go.uuid"
+	"encoding/base64"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 )
@@ -17,20 +16,22 @@ type User struct {
 }
 
 func (u *User) SaltAndSetPassword() {
-	u.Salt = uuid.NewV4().String()
-	password := fmt.Sprint(u.Password, u.Salt)
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.MinCost)
 	if err != nil {
 		log.Println(err)
 	}
-	u.Password = string(hash)
+	u.Password = base64.StdEncoding.EncodeToString(hash)
 }
 
-func (u *User) CheckPassword(password string) bool {
-	password = fmt.Sprint(password, u.Salt)
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+func (u *User) CheckPassword(password string) (ok bool) {
+	hashB, err := base64.StdEncoding.DecodeString(u.Password)
 	if err != nil {
-		log.Println(err)
+		panic(err)
 	}
-	return u.Password == string(hash)
+	hashP := []byte(password)
+	err = bcrypt.CompareHashAndPassword(hashB, hashP)
+	if err != nil {
+		return false
+	}
+	return true
 }

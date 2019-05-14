@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/controller"
@@ -19,7 +18,6 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 		logrus.Errorln(err)
 		return
 	}
-	fmt.Println(string(b))
 	user := model.User{}
 	err = json.Unmarshal(b, &user)
 	if err != nil {
@@ -44,11 +42,7 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		user.ID = uuid.NewV4().String()
-		p := user.Password
 		user.SaltAndSetPassword()
-		if user.CheckPassword(p) {
-			panic("Passwords do not match")
-		}
 		err = controller.InsertUser(conn, &user)
 		if err != nil {
 			logrus.Errorln(err)
@@ -86,9 +80,10 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 
 	var dbUser *model.User
 	dbUser, err = controller.GetUserByEmail(conn, user.Email)
-	if dbUser != nil && dbUser.ID != "" {
+	if dbUser != nil && dbUser.ID != "" && dbUser.CheckPassword(user.Password) {
+
 		err := utils.WriteXToWriter(w, model.MessageLoginResponseV1{
-			OK:  false,
+			OK:  true,
 			Key: dbUser.ID,
 		})
 		if err != nil {
