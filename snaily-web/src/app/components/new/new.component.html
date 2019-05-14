@@ -1,3 +1,63 @@
-<p>
-  New works
-</p>
+<div style="margin-top:25px;" class="row">
+
+
+  <div class="col-6">
+
+    <h1>What are you waiting for?</h1>
+
+    <form>
+      <fieldset>
+
+        <div class="form-group">
+          <label for="email">Throw to email</label>
+          <div class="input-group col-md-6">
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="email"
+                   placeholder="" [(ngModel)]="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="body">I am waiting for...</label>
+          <div class="input-group col-md-6">
+            <textarea rows="5" class="form-control" id="body" name="body" aria-describedby="waiting"
+                      placeholder="" [(ngModel)]="body"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="title">Now in five words or less...</label>
+          <div class="input-group col-md-6">
+            <input type="text" class="form-control" id="title" name="title" aria-describedby="title"
+                   placeholder="" [(ngModel)]="title">
+          </div>
+        </div>
+
+
+      </fieldset>
+    </form>
+  </div>
+
+
+  <div class="col-6">
+
+    <h1>Result</h1>
+
+    <div id="namespaceCard" class="card text-white {{theme}} mb-3" style="max-width: 20rem;">
+      <div class="card-body">
+        <p class="card-title">{{title}}</p>
+        <p class="card-text">
+          {{body}}
+        </p>
+      </div>
+      <div class="card-footer text-muted">
+        {{email}}
+      </div>
+    </div>
+
+    <button type="button" (click)="request()" class="btn btn-outline-primary">Save</button>
+
+
+  </div>
+
+</div>
+
