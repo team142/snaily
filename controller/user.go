@@ -34,10 +34,12 @@ func UserExists(conn *pgx.Conn, email string) bool {
 
 func GetUserByEmail(conn *pgx.Conn, email string) (item *model.User, err error) {
 	rows, _ := conn.Query("select * from madast.users where email=$1", email)
-	item = &model.User{}
-	err = rows.Scan(&item.ID, &item.Email, &item.FirstName, &item.LastName)
-	if err != nil {
-		logrus.Errorln(err)
+	if rows.Next() {
+		item = &model.User{}
+		err = rows.Scan(&item.ID, &item.Email, &item.FirstName, &item.LastName)
+		if err != nil {
+			logrus.Errorln(err)
+		}
 	}
 	return
 }

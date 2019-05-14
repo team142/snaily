@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/controller"
@@ -18,6 +19,7 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 		logrus.Errorln(err)
 		return
 	}
+	fmt.Println(string(b))
 	user := model.User{}
 	err = json.Unmarshal(b, &user)
 	if err != nil {
