@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   private loginReq: MessageLoginRequestV1;
 
   private themeRegister = 'animated bounceInRight';
+  private themeLogin = 'animated bounceInLeft';
 
   constructor(private router: Router, private registerService: RegisterService, private loginService: LoginService) {
     this.registerReq = new MessageRegisterRequestV1();
@@ -43,10 +44,12 @@ export class LoginComponent implements OnInit {
       alert('Could not register? Maybe you\'re already a user?');
     });
 
-
   }
 
   public login() {
+    this.flyOut();
+
+
     this.loginService.post(this.loginReq, (result) => {
       if (result.ok === true) {
         UserState.login();
@@ -54,6 +57,7 @@ export class LoginComponent implements OnInit {
         console.log(result.key);
       } else {
         alert('Authentication failed');
+        this.flyIn();
       }
 
     }, (error) => {
@@ -64,6 +68,18 @@ export class LoginComponent implements OnInit {
     setTimeout(() => {
       this.amILoggedIn();
     }, 1000);
+
+  }
+
+  private flyOut() {
+    this.themeRegister = 'animated bounceOutRight';
+    this.themeLogin = 'animated bounceOutLeft';
+
+  }
+
+  private flyIn() {
+    this.themeRegister = 'animated bounceInRight';
+    this.themeLogin = 'animated bounceInLeft';
 
   }
 
