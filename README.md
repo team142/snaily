@@ -11,7 +11,9 @@ The Go program proxies the Angular app.
 ```bash
     ./start-pg.sh
 ```
-2. Run setup.sql against postgres::snaily@localhost:5000/madast 
+2. Run setup.sql against postgres::snaily@localhost:5000/madast
+
+:D  Will try automate this sometime. 
 
 ## Running the application
 
