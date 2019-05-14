@@ -12,7 +12,6 @@ type User struct {
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Password  string `json:"password"`
-	Salt      string `json:"salt"`
 }
 
 func (u *User) SaltAndSetPassword() {
