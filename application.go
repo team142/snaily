@@ -2,8 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -25,7 +28,7 @@ func main() {
 	//Handles everything else
 	if *container {
 		//Serve from web folder
-		// TODO: host locally
+		router.PathPrefix("/").HandlerFunc(staticFileServer)
 	} else {
 		//When running locally - reverse proxy to node js server
 		router.PathPrefix("/").HandlerFunc(buildHomeRouter())
@@ -34,6 +37,20 @@ func main() {
 	//The server
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
+}
+
+func staticFileServer(w http.ResponseWriter, r *http.Request) {
+	dir := fmt.Sprint("/web/", r.URL.Path)
+	fmt.Println(dir)
+	b, err := ioutil.ReadFile(dir)
+	if err != nil {
+		logrus.Errorln(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	// TODO: write the mime type
+	w.Write(b)
+
 }
 
 func buildHomeRouter() func(w http.ResponseWriter, r *http.Request) {

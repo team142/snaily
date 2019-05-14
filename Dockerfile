@@ -35,4 +35,4 @@ COPY --from=builder /src/app /app
 USER nobody:nobody
 RUN mkdir /web
 COPY --from=ngbuilder /src/snaily-web/dist/snaily-web /web
-ENTRYPOINT ["/app"]
+ENTRYPOINT ["/app", "-container=true"]
