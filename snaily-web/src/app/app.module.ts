@@ -3,6 +3,8 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {RegisterService} from './services/register.service';
+import {HttpClientModule} from '@angular/common/http';
 
 // Libs
 import {HttpModule} from '@angular/http';
@@ -14,6 +16,8 @@ import {HomeComponent} from './components/home/home.component';
 import {NewComponent} from './components/new/new.component';
 import {HelpComponent} from './components/help/help.component';
 import {ViewComponent} from './components/view/view.component';
+import {HttpClient} from '@angular/common/http';
+import {LoginService} from './services/login.service';
 
 // import './rxjs-extensions';
 
@@ -32,9 +36,11 @@ import {ViewComponent} from './components/view/view.component';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    HttpModule
+    HttpModule,
+    HttpClientModule,
+
   ],
-  providers: [],
+  providers: [RegisterService, HttpClient, LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

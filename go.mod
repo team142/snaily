@@ -8,6 +8,6 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.1
-	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529 // indirect
+	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529
 	golang.org/x/text v0.3.2 // indirect
 )

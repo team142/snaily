@@ -20,5 +20,5 @@ alter table madast.users
     owner to snaily;
 
 
-
+alter table madast.users add column password text;
 
