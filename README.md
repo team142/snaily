@@ -1,9 +1,6 @@
 # snaily
 
-
-
-# Note #
-The Go program proxies the Angular app.
+Note :: The Go program proxies the Angular app.
 
 ## Installing
 
@@ -29,4 +26,5 @@ The Go program proxies the Angular app.
     go run application.go
 ```
 
+IMPORTANT: Open the app in your browser at :8080 NOT :4200!
 
