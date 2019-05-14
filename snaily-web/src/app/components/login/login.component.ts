@@ -16,6 +16,8 @@ export class LoginComponent implements OnInit {
   private registerReq: MessageRegisterRequestV1;
   private loginReq: MessageLoginRequestV1;
 
+  private themeRegister = 'animated bounceInRight';
+
   constructor(private router: Router, private registerService: RegisterService, private loginService: LoginService) {
     this.registerReq = new MessageRegisterRequestV1();
     this.loginReq = new MessageLoginRequestV1();
@@ -33,15 +35,32 @@ export class LoginComponent implements OnInit {
   }
 
   public register() {
-    this.registerService.post(this.registerReq);
-    setTimeout(() => {
-      this.amILoggedIn();
-    }, 1000);
+    this.themeRegister = 'animated bounceOutRight';
+
+    this.registerService.post(this.registerReq, (result) => {
+      alert('Ok. Next you must login');
+    }, (error) => {
+      alert('Could not register? Maybe you\'re already a user?');
+    });
+
 
   }
 
   public login() {
-    this.loginService.post(this.loginReq);
+    this.loginService.post(this.loginReq, (result) => {
+      if (result.ok === true) {
+        UserState.login();
+        UserState.setKey(result.key);
+        console.log(result.key);
+      } else {
+        alert('Authentication failed');
+      }
+
+    }, (error) => {
+      alert(error);
+    });
+
+
     setTimeout(() => {
       this.amILoggedIn();
     }, 1000);

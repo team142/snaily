@@ -11,20 +11,17 @@ export class RegisterService {
   constructor(private http: HttpClient) {
   }
 
-  public post(item: MessageRegisterRequestV1): void {
+  public post(item: MessageRegisterRequestV1, win: Function, fail: Function): void {
     this.http.post(environment.urlRegisterV1, item)
       .toPromise()
-      .then((result => this.handleRegiserResult(result)))
-      .catch((error) => console.log(error));
-
-  }
-
-  private handleRegiserResult(result: any) {
-    if (result.ok === true) {
-      alert('You are registered. Try logging in next.');
-    } else {
-      alert('Failed to register. Perhaps you are already registered?');
-    }
+      .then((result) => {
+          win(result);
+        }
+      )
+      .catch((error) => {
+        fail(error);
+        console.log(error);
+      });
 
   }
 
