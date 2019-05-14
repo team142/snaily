@@ -41,7 +41,7 @@ func main() {
 
 func staticFileServer(w http.ResponseWriter, r *http.Request) {
 	dir := fmt.Sprint("/web/", r.URL.Path)
-	fmt.Println(dir)
+	logrus.Println(dir)
 	b, err := ioutil.ReadFile(dir)
 	if err != nil {
 		logrus.Errorln(err)

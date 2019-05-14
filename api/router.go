@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -23,6 +24,6 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := fmt.Sprint("Could not find route for ", r.URL.Path)
-	fmt.Println(msg)
+	logrus.Println(msg)
 	w.Write([]byte(msg))
 }
