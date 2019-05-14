@@ -44,6 +44,11 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		user.ID = uuid.NewV4().String()
+		p := user.Password
+		user.SaltAndSetPassword()
+		if user.CheckPassword(p) {
+			panic("Passwords do not match")
+		}
 		err = controller.InsertUser(conn, &user)
 		if err != nil {
 			logrus.Errorln(err)
