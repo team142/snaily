@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
+	"github.com/team142/snaily/db"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -18,8 +19,16 @@ var addr = flag.String("address", ":8080", "")
 var addrToProxy = flag.String("proxy", "http://localhost:4200", "The url of the angular app to reverse proxy")
 var container = flag.Bool("container", false, "The url of the angular app to reverse proxy")
 
+var DatabaseHost = flag.String("pghost", "localhost", "PG hostname")
+var DatabaseUser = flag.String("pguser", "snaily", "PG username")
+var DatabasePassword = flag.String("pgpassword", "snaily", "PG password")
+var DatabaseDatabase = "madast"
+var Port = flag.Uint64("pgport", 5000, "PG port")
+
 func main() {
 	flag.Parse()
+
+	setDBDefaultConfig()
 
 	router := mux.NewRouter()
 
@@ -38,6 +47,21 @@ func main() {
 	//The server
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
+}
+
+func setDBDefaultConfig() {
+	db.DefaultConfig.User = *DatabaseUser
+	db.DefaultConfig.Password = *DatabasePassword
+	db.DefaultConfig.Host = *DatabaseHost
+	db.DefaultConfig.Port = uint16(*Port)
+	db.DefaultConfig.Database = DatabaseDatabase
+
+	logrus.Infoln(
+		db.DefaultConfig.User, "@",
+		db.DefaultConfig.Host, ":",
+		db.DefaultConfig.Port, "/",
+		db.DefaultConfig.Database,
+	)
 }
 
 func staticFileServer(w http.ResponseWriter, r *http.Request) {
