@@ -8,11 +8,10 @@ FROM node:12-alpine as ngbuilder
 RUN npm install -g @angular/cli
 RUN mkdir /src
 WORKDIR /src
-COPY snaily-web .
+COPY snaily-web /src/snaily-web
 WORKDIR /src/snaily-web
-RUN chmod -R 777 ./
+#RUN chmod -R 777 ./
 RUN npm i
-RUN ls -la
 RUN ng build
 
 # Build Golang app in Go container
@@ -33,6 +32,5 @@ COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /src/app /app
 USER nobody:nobody
-RUN mkdir /web
-COPY --from=ngbuilder /src/snaily-web/dist/snaily-web /web
+COPY --from=ngbuilder /src/snaily-web/dist/snaily-web /
 ENTRYPOINT ["/app", "-container=true"]
