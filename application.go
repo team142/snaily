@@ -6,12 +6,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
+	"os"
 )
 
 var addr = flag.String("address", ":8080", "")
@@ -41,32 +40,21 @@ func main() {
 }
 
 func staticFileServer(w http.ResponseWriter, r *http.Request) {
-	dir := fmt.Sprint("/snaily-web", r.URL.Path)
+	name := fmt.Sprint("/snaily-web", r.URL.Path)
 
-	if dir == "/snaily-web/" {
-		dir = "/snaily-web/index.html"
+	if name == "/snaily-web/" {
+		name = "/snaily-web/index.html"
 	}
 
-	logrus.Println(dir)
-	b, err := ioutil.ReadFile(dir)
-	if err != nil {
-		//Check if we need to use index fallback?
-		if !strings.Contains(dir, ".") {
-			//Probably need to do fallback
-			dir = "/snaily-web/index.html"
-			b, err = ioutil.ReadFile(dir)
-			if err != nil {
-				logrus.Panic(err)
-			}
-		} else {
-			//Actual error
-			logrus.Errorln(err)
-			w.WriteHeader(http.StatusNotFound)
-		}
+	logrus.Println(name)
+
+	if f, err := os.Stat(name); err == nil && !f.IsDir() {
+		http.ServeFile(w, r, name)
 		return
 	}
-	// TODO: write the mime type
-	w.Write(b)
+
+	logrus.Println(name)
+	http.NotFound(w, r)
 
 }
 
