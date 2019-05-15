@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 )
 
 var addr = flag.String("address", ":8080", "")
@@ -46,14 +47,19 @@ func staticFileServer(w http.ResponseWriter, r *http.Request) {
 		name = "/snaily-web/index.html"
 	}
 
-	logrus.Println(name)
-
 	if f, err := os.Stat(name); err == nil && !f.IsDir() {
+		logrus.Println("For: ", r.URL.Path, ", Serving: ", name)
 		http.ServeFile(w, r, name)
 		return
 	}
 
-	logrus.Println(name)
+	if !strings.Contains(name, ".") {
+		logrus.Println("For: ", r.URL.Path, ", Serving: ", "/snaily-web/index.html")
+		http.ServeFile(w, r, "/snaily-web/index.html")
+		return
+	}
+
+	logrus.Println("For: ", r.URL.Path, ", NOT FOUND")
 	http.NotFound(w, r)
 
 }
