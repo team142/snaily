@@ -32,5 +32,5 @@ COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /src/app /app
 USER nobody:nobody
-COPY --from=ngbuilder /src/snaily-web/dist/snaily-web /
+COPY --from=ngbuilder /src/snaily-web/dist/snaily-web /snaily-web
 ENTRYPOINT ["/app", "-container=true"]
