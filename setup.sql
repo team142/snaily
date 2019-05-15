@@ -2,6 +2,8 @@
 -- Run from snaily user in madast database
 --
 
+---- START OF VERSION 1
+
 create schema madast;
 
 create table madast.users
@@ -20,5 +22,7 @@ alter table madast.users
     owner to snaily;
 
 
-alter table madast.users add column password text;
+alter table madast.users
+    add column password text;
 
+---- END OF VERSION 1

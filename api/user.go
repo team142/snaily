@@ -26,7 +26,7 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Persist or store
-	conn, err := db.Connect()
+	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
 		logrus.Errorln(err)
 		return
@@ -71,7 +71,7 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Persist or store
-	conn, err := db.Connect()
+	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
 		logrus.Errorln(err)
 		return

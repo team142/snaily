@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func HandleIncoming(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin:", "http://localhost:8080")
 	if r.Method == http.MethodOptions {
 		w.Write([]byte(""))
 		return
@@ -23,6 +23,6 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := fmt.Sprint("Could not find route for ", r.URL.Path)
-	fmt.Println(msg)
+	logrus.Println(msg)
 	w.Write([]byte(msg))
 }
