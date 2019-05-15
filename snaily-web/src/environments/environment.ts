@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  urlRegisterV1: 'http://localhost:8080/api/register',
-  urlLoginV1: 'http://localhost:8080/api/login'
+  urlRegisterV1: '/api/register',
+  urlLoginV1: '/api/login'
 };
 
 /*

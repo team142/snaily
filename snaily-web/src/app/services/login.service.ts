@@ -12,7 +12,7 @@ export class LoginService {
   }
 
   public post(item: MessageLoginRequestV1, win: Function, fail: Function): void {
-    this.http.post(environment.urlLoginV1, item)
+    this.http.post(window.location.origin + environment.urlLoginV1, item)
       .toPromise()
       .then((result) => {
         win(result);

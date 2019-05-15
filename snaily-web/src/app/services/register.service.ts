@@ -12,7 +12,7 @@ export class RegisterService {
   }
 
   public post(item: MessageRegisterRequestV1, win: Function, fail: Function): void {
-    this.http.post(environment.urlRegisterV1, item)
+    this.http.post(window.location.origin + environment.urlRegisterV1, item)
       .toPromise()
       .then((result) => {
           win(result);
