@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 )
 
 var addr = flag.String("address", ":8080", "")
@@ -49,8 +50,19 @@ func staticFileServer(w http.ResponseWriter, r *http.Request) {
 	logrus.Println(dir)
 	b, err := ioutil.ReadFile(dir)
 	if err != nil {
-		logrus.Errorln(err)
-		w.WriteHeader(http.StatusNotFound)
+		//Check if we need to use index fallback?
+		if !strings.Contains(dir, ".") {
+			//Probably need to do fallback
+			dir = "/snaily-web/index.html"
+			b, err = ioutil.ReadFile(dir)
+			if err != nil {
+				logrus.Panic(err)
+			}
+		} else {
+			//Actual error
+			logrus.Errorln(err)
+			w.WriteHeader(http.StatusNotFound)
+		}
 		return
 	}
 	// TODO: write the mime type
