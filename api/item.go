@@ -46,6 +46,30 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func handleGetItemAll(w http.ResponseWriter, r *http.Request) {
+func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	req := model.MessageMyItemsRequestV1{}
+	if err = json.Unmarshal(b, &req); err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
+	conn, err := db.Connect(db.DefaultConfig)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	defer conn.Close()
+
+	//TODO: FOR NOW THE KEY IS THE USER ID. THIS MUST CHANGE
+
+	user, err := controller.GetUser(conn, req.Key)
+	if err != nil {
+		logrus.Errorln(err)
+	}
 
 }
