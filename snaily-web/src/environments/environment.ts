@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   urlRegisterV1: '/api/register',
-  urlLoginV1: '/api/login'
+  urlLoginV1: '/api/login',
+  urlNewItemV1: '/api/new-item',
 };
 
 /*

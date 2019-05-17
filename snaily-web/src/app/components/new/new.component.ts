@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {ItemService} from '../../services/item.service';
+import {ItemV1} from '../../model/item-v1';
+import {UserState} from '../../model/state/userState';
 
 declare var Swal: any;
 
@@ -22,57 +25,39 @@ export class NewComponent implements OnInit {
 
   private theme = '';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private itemService: ItemService) {
   }
 
   ngOnInit() {
+    alert('hi');
     this.setTimeAsNow();
   }
 
   public request(): void {
-    this.theme = 'animated flipOutX';
-
-    setTimeout(() => {
-        this.save();
-      }
-      , 1500);
+    this.saveItem();
   }
 
-  private save(): void {
-    let timerInterval;
-    Swal.fire({
-      title: 'Saving',
-      html: 'Checking in <strong></strong> ms.',
-      timer: 3000,
-      onBeforeOpen: () => {
-        Swal.showLoading();
-        timerInterval = setInterval(() => {
-          Swal.getContent().querySelector('strong')
-            .textContent = Swal.getTimerLeft();
-        }, 100);
-      },
-      onClose: () => {
-        clearInterval(timerInterval);
-      }
-    }).then((result) => {
-      if (
-        // Read more about handling dismissals
-        result.dismiss === Swal.DismissReason.timer
-      ) {
-        this.theme = 'bg-success animated flipInX';
-        setTimeout(() => {
-          this.savedSuccess();
-        }, 1500);
 
-        setTimeout(() => {
-          this.router.navigate(['./']);
-        }, 3200);
+  private saveItem(): void {
 
+    const i = new ItemV1();
+    i.title = this.title;
+    i.body = this.body;
+    i.createdBy = UserState.getKey();
+    i.WaitingFor = this.email;
+
+
+    this.itemService.post(i, (result) => (
+        this.animateSuccess(result)
+      ),
+      (error) => {
+        alert('Error - ' + error);
       }
-    });
+    );
   }
 
-  private savedSuccess(): void {
+  private animateSuccess(result: any) {
+    console.log(result);
     Swal.fire({
       position: 'middle-end',
       type: 'success',
@@ -80,6 +65,10 @@ export class NewComponent implements OnInit {
       showConfirmButton: false,
       timer: 1800
     });
+
+    setTimeout(() => {
+      this.router.navigate(['./']);
+    }, 3200);
 
   }
 
