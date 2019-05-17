@@ -118,19 +118,21 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn.Close()
 		for ID := range in {
-			wgItems.Done()
 			if !result.Users.Contains(ID) {
 				u, err := controller.GetUser(conn, ID)
 				if err != nil {
 					logrus.Errorln(err)
+					wgItems.Done()
 					continue
 				}
 				if u == nil {
 					logrus.Errorln("Could not find ID: ", ID)
+					wgItems.Done()
 					continue
 				}
 				result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
 			}
+			wgItems.Done()
 		}
 
 	}(in)
