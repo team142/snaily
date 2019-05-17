@@ -3,16 +3,16 @@ package model
 import "time"
 
 type Item struct {
-	ID                  string
-	Parent              string
-	Title               string
-	Body                string
-	CreateDate          time.Time
-	Thrower             string
-	Holder              string
-	OrganizationID      string
-	HolderSaysDone      bool
-	HolderSaysDoneTime  time.Time
-	ThrowerSaysDone     bool
-	ThrowerSaysDoneTime time.Time
+	ID                 string
+	Parent             string
+	Title              string
+	Body               string
+	CreateDate         time.Time
+	CreatedBy          string
+	WaitingFor         string
+	OrgID              string
+	WaitingForDone     bool
+	WaitingForDoneDate time.Time
+	CreatedByDone      bool
+	CreatedByDoneDate  time.Time
 }
