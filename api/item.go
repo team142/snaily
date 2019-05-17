@@ -39,6 +39,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 
 	u, err := controller.GetUserByEmail(conn, item.WaitingFor)
 	if err != nil {
+		http.Error(w, "Database read problem", http.StatusInternalServerError)
 		logrus.Errorln(err)
 		return
 	}
@@ -46,6 +47,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 		u = model.NewUserFromEmail(item.WaitingFor)
 		if err = controller.InsertUser(conn, u); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database write problem", http.StatusInternalServerError)
 			return
 		}
 	}
