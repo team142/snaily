@@ -17,12 +17,14 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	item := model.Item{}
 	err = json.Unmarshal(b, &item)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	item.GenerateID()
@@ -30,6 +32,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, "Database connection problem", http.StatusInternalServerError)
 		return
 	}
 	defer conn.Close()
@@ -38,6 +41,13 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logrus.Errorln(err)
 		return
+	}
+	if u == nil {
+		u = model.NewUserFromEmail(item.WaitingFor)
+		if err = controller.InsertUser(conn, u); err != nil {
+			logrus.Errorln(err)
+			return
+		}
 	}
 	item.WaitingFor = u.ID
 
@@ -109,10 +119,15 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		for {
 			select {
 			case ID := <-in:
+				logrus.Infoln("Fetching user with ID: ", ID)
 				if !result.Users.Contains(ID) {
 					u, err := controller.GetUser(conn, ID)
 					if err != nil {
 						logrus.Errorln(err)
+						continue
+					}
+					if u == nil {
+						logrus.Warningln("Could not find ID: ", ID)
 						continue
 					}
 					result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})

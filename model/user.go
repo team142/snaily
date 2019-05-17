@@ -2,8 +2,10 @@ package model
 
 import (
 	"encoding/base64"
+	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"strings"
 )
 
 type User struct {
@@ -33,4 +35,12 @@ func (u *User) CheckPassword(password string) (ok bool) {
 		return false
 	}
 	return true
+}
+
+func NewUserFromEmail(email string) *User {
+	return &User{
+		ID:    uuid.NewV4().String(),
+		Email: strings.ToLower(email),
+	}
+
 }
