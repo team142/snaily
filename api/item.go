@@ -34,6 +34,13 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	u, err := controller.GetUserByEmail(conn, item.WaitingFor)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	item.WaitingFor = u.ID
+
 	if err := controller.InsertItem(conn, &item); err != nil {
 		logrus.Errorln(err)
 		if err := utils.WriteXToWriter(w, model.MessageNewItemResponseV1{OK: false}); err != nil {
@@ -80,7 +87,11 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := model.MessageMyItemsResponseV1{}
+	result := model.MessageMyItemsResponseV1{
+		CreatedByMe:  make([]*model.Item, 0),
+		WaitingForMe: make([]*model.Item, 0),
+		Users:        make(model.MessageUsersV1, 0),
+	}
 
 	var wg sync.WaitGroup
 
@@ -130,6 +141,8 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for item := range out {
+			in <- item.WaitingFor
+			in <- item.CreatedBy
 			result.CreatedByMe = append(result.CreatedByMe, item)
 		}
 		wg.Done()
@@ -152,6 +165,8 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for item := range out {
+			in <- item.WaitingFor
+			in <- item.CreatedBy
 			result.WaitingForMe = append(result.WaitingForMe, item)
 		}
 		wg.Done()
