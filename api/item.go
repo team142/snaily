@@ -98,8 +98,8 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 					}
 					result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
 				}
-			case _ = <-stop:
-				break
+			case <-stop:
+				return
 			}
 		}
 
