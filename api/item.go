@@ -146,6 +146,8 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 
 	wg.Wait()
 	stop <- true
+	close(in)
+	close(stop)
 
 	if err = utils.WriteXToWriter(w, result); err != nil {
 		logrus.Errorln(err)
