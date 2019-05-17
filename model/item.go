@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	uuid "github.com/satori/go.uuid"
+	"time"
+)
 
 type Item struct {
 	ID                 string
@@ -15,4 +18,8 @@ type Item struct {
 	WaitingForDoneDate time.Time
 	CreatedByDone      bool
 	CreatedByDoneDate  time.Time
+}
+
+func (i *Item) GenerateID() {
+	i.ID = uuid.NewV4().String()
 }

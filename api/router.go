@@ -22,6 +22,11 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.URL.Path == "/api/new-item" {
+		handleCreateItem(w, r)
+		return
+	}
+
 	msg := fmt.Sprint("Could not find route for ", r.URL.Path)
 	logrus.Println(msg)
 	w.Write([]byte(msg))
