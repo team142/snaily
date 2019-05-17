@@ -49,20 +49,24 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
+	var b []byte
+	var err error
+	if b, err = ioutil.ReadAll(r.Body); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	req := model.MessageMyItemsRequestV1{}
 	if err = json.Unmarshal(b, &req); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	var conn *pgx.Conn
 	if conn, err = db.Connect(db.DefaultConfig); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, "Database connection error", http.StatusInternalServerError)
 		return
 	}
 	defer conn.Close()
@@ -72,6 +76,8 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 	user, err := controller.GetUser(conn, req.Key)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, "Authentication error", http.StatusBadRequest)
+		return
 	}
 
 	result := model.MessageMyItemsResponseV1{}
@@ -85,6 +91,7 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database connection error", http.StatusInternalServerError)
 			return
 		}
 		defer conn.Close()
@@ -95,6 +102,7 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 					u, err := controller.GetUser(conn, ID)
 					if err != nil {
 						logrus.Errorln(err)
+						continue
 					}
 					result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
 				}
@@ -110,13 +118,16 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database connection error", http.StatusInternalServerError)
 			return
 		}
 		defer conn.Close()
 
-		out, err := controller.GetItemsByCreatedBy(conn, user.ID)
-		if err != nil {
+		var out chan *model.Item
+		if out, err = controller.GetItemsByCreatedBy(conn, user.ID); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database query error", http.StatusInternalServerError)
+			return
 		}
 		for item := range out {
 			result.CreatedByMe = append(result.CreatedByMe, item)
@@ -129,18 +140,20 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database connection error", http.StatusInternalServerError)
 			return
 		}
 		defer conn.Close()
 
-		out, err := controller.GetItemsByWaitingFor(conn, user.ID)
-		if err != nil {
+		var out chan *model.Item
+		if out, err = controller.GetItemsByWaitingFor(conn, user.ID); err != nil {
 			logrus.Errorln(err)
+			http.Error(w, "Database query error", http.StatusInternalServerError)
+			return
 		}
 		for item := range out {
 			result.WaitingForMe = append(result.WaitingForMe, item)
 		}
-
 		wg.Done()
 	}()
 
