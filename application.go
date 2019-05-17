@@ -92,6 +92,7 @@ func buildHomeRouter() func(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(*addrToProxy)
 	rp := httputil.NewSingleHostReverseProxy(u)
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Cache-Control", "no-cache")
 		rp.ServeHTTP(w, r)
 	}
 }
