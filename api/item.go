@@ -105,12 +105,11 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 		Users:        make(model.MessageUsersV1, 0),
 	}
 
-	var wg sync.WaitGroup
+	var wgItems sync.WaitGroup
 
 	in := make(chan string, 10)
-	stop := make(chan bool)
 
-	go func(in chan string, stop chan bool) {
+	go func(in chan string) {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
 			logrus.Errorln(err)
@@ -118,30 +117,25 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer conn.Close()
-		for {
-			select {
-			case ID := <-in:
-				logrus.Infoln("Fetching user with ID: ", ID)
-				if !result.Users.Contains(ID) {
-					u, err := controller.GetUser(conn, ID)
-					if err != nil {
-						logrus.Errorln(err)
-						continue
-					}
-					if u == nil {
-						logrus.Warningln("Could not find ID: ", ID)
-						continue
-					}
-					result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
+		for ID := range in {
+			wgItems.Done()
+			if !result.Users.Contains(ID) {
+				u, err := controller.GetUser(conn, ID)
+				if err != nil {
+					logrus.Errorln(err)
+					continue
 				}
-			case <-stop:
-				return
+				if u == nil {
+					logrus.Errorln("Could not find ID: ", ID)
+					continue
+				}
+				result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
 			}
 		}
 
-	}(in, stop)
+	}(in)
 
-	wg.Add(1)
+	wgItems.Add(1)
 	go func() {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
@@ -158,14 +152,16 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for item := range out {
+			wgItems.Add(1)
 			in <- item.WaitingFor
+			wgItems.Add(1)
 			in <- item.CreatedBy
 			result.CreatedByMe = append(result.CreatedByMe, item)
 		}
-		wg.Done()
+		wgItems.Done()
 	}()
 
-	wg.Add(1)
+	wgItems.Add(1)
 	go func() {
 		var conn *pgx.Conn
 		if conn, err = db.Connect(db.DefaultConfig); err != nil {
@@ -182,17 +178,17 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for item := range out {
+			wgItems.Add(1)
 			in <- item.WaitingFor
+			wgItems.Add(1)
 			in <- item.CreatedBy
 			result.WaitingForMe = append(result.WaitingForMe, item)
 		}
-		wg.Done()
+		wgItems.Done()
 	}()
 
-	wg.Wait()
-	stop <- true
+	wgItems.Wait()
 	close(in)
-	close(stop)
 
 	if err = utils.WriteXToWriter(w, result); err != nil {
 		logrus.Errorln(err)
