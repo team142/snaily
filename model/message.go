@@ -20,7 +20,7 @@ type MessageMyItemsRequestV1 struct {
 
 type MessageMyItemsResponseV1 struct {
 	CreatedByMe  []*Item        `json:"createdByMe"`
-	WaitingForMe []*Item        `json:"WaitingForMe"`
+	WaitingForMe []*Item        `json:"waitingForMe"`
 	Users        MessageUsersV1 `json:"users"`
 }
 
