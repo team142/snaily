@@ -27,25 +27,19 @@ func InsertItem(conn *pgx.Conn, item *model.Item) (err error) {
 }
 
 func GetItem(conn *pgx.Conn, ID string) (item *model.Item, err error) {
-	rows, _ := conn.Query("select * from madast.items where id=$1", ID)
-	item = &model.Item{}
-	err = rows.Scan(
-		&item.ID,
-		&item.Parent,
-		&item.Title,
-		&item.Body,
-		&item.CreateDate,
-		&item.CreatedBy,
-		&item.WaitingFor,
-		&item.OrgID,
-		&item.WaitingForDone,
-		&item.WaitingForDoneDate,
-		&item.CreatedByDone,
-		&item.CreatedByDoneDate)
+	rows, err := conn.Query("select * from madast.items where id=$1", ID)
 	if err != nil {
 		logrus.Errorln(err)
+		return
+	}
+	out := make(chan *model.Item)
+	go rowsToItemChan(rows, out)
+	for r := range out {
+		item = r
+		return
 	}
 	return
+
 }
 
 func GetItemsByParent(conn *pgx.Conn, ID string) (out chan *model.Item, err error) {
@@ -55,7 +49,7 @@ func GetItemsByParent(conn *pgx.Conn, ID string) (out chan *model.Item, err erro
 		return
 	}
 	out = make(chan *model.Item)
-	go rowsToChanIgnoreErr(rows, out)
+	go rowsToItemChan(rows, out)
 	return
 }
 
@@ -66,7 +60,7 @@ func GetItemsByCreatedBy(conn *pgx.Conn, ID string) (out chan *model.Item, err e
 		return
 	}
 	out = make(chan *model.Item)
-	go rowsToChanIgnoreErr(rows, out)
+	go rowsToItemChan(rows, out)
 	return
 }
 
@@ -77,11 +71,11 @@ func GetItemsByWaitingFor(conn *pgx.Conn, ID string) (out chan *model.Item, err 
 		return
 	}
 	out = make(chan *model.Item)
-	go rowsToChanIgnoreErr(rows, out)
+	go rowsToItemChan(rows, out)
 	return
 }
 
-func rowsToChanIgnoreErr(rows *pgx.Rows, out chan *model.Item) {
+func rowsToItemChan(rows *pgx.Rows, out chan *model.Item) {
 	var err error
 	for rows.Next() {
 		item := model.Item{}
