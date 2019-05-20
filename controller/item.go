@@ -55,29 +55,7 @@ func GetItemsByParent(conn *pgx.Conn, ID string) (out chan *model.Item, err erro
 		return
 	}
 	out = make(chan *model.Item)
-	go func() {
-		for rows.Next() {
-			item := model.Item{}
-			err = rows.Scan(
-				&item.ID,
-				&item.Parent,
-				&item.Title,
-				&item.Body,
-				&item.CreateDate,
-				&item.CreatedBy,
-				&item.WaitingFor,
-				&item.OrgID,
-				&item.WaitingForDone,
-				&item.WaitingForDoneDate,
-				&item.CreatedByDone,
-				&item.CreatedByDoneDate)
-			if err != nil {
-				logrus.Errorln(err)
-			}
-			out <- &item
-		}
-		close(out)
-	}()
+	go rowsToChanIgnoreErr(rows, out)
 	return
 }
 
@@ -88,29 +66,7 @@ func GetItemsByCreatedBy(conn *pgx.Conn, ID string) (out chan *model.Item, err e
 		return
 	}
 	out = make(chan *model.Item)
-	go func() {
-		for rows.Next() {
-			item := model.Item{}
-			err = rows.Scan(
-				&item.ID,
-				&item.Parent,
-				&item.Title,
-				&item.Body,
-				&item.CreateDate,
-				&item.CreatedBy,
-				&item.WaitingFor,
-				&item.OrgID,
-				&item.WaitingForDone,
-				&item.WaitingForDoneDate,
-				&item.CreatedByDone,
-				&item.CreatedByDoneDate)
-			if err != nil {
-				logrus.Errorln(err)
-			}
-			out <- &item
-		}
-		close(out)
-	}()
+	go rowsToChanIgnoreErr(rows, out)
 	return
 }
 
@@ -121,28 +77,32 @@ func GetItemsByWaitingFor(conn *pgx.Conn, ID string) (out chan *model.Item, err 
 		return
 	}
 	out = make(chan *model.Item)
-	go func() {
-		for rows.Next() {
-			item := model.Item{}
-			err = rows.Scan(
-				&item.ID,
-				&item.Parent,
-				&item.Title,
-				&item.Body,
-				&item.CreateDate,
-				&item.CreatedBy,
-				&item.WaitingFor,
-				&item.OrgID,
-				&item.WaitingForDone,
-				&item.WaitingForDoneDate,
-				&item.CreatedByDone,
-				&item.CreatedByDoneDate)
-			if err != nil {
-				logrus.Errorln(err)
-			}
-			out <- &item
+	go rowsToChanIgnoreErr(rows, out)
+	return
+}
+
+func rowsToChanIgnoreErr(rows *pgx.Rows, out chan *model.Item) {
+	var err error
+	for rows.Next() {
+		item := model.Item{}
+		err = rows.Scan(
+			&item.ID,
+			&item.Parent,
+			&item.Title,
+			&item.Body,
+			&item.CreateDate,
+			&item.CreatedBy,
+			&item.WaitingFor,
+			&item.OrgID,
+			&item.WaitingForDone,
+			&item.WaitingForDoneDate,
+			&item.CreatedByDone,
+			&item.CreatedByDoneDate)
+		if err != nil {
+			logrus.Errorln(err)
 		}
-		close(out)
-	}()
+		out <- &item
+	}
+	close(out)
 	return
 }
