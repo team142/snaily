@@ -29,7 +29,6 @@ export class NewComponent implements OnInit {
   }
 
   ngOnInit() {
-    alert('hi');
     this.setTimeAsNow();
   }
 

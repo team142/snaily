@@ -6,18 +6,18 @@ import (
 )
 
 type Item struct {
-	ID                 string
-	Parent             string
-	Title              string
-	Body               string
-	CreateDate         time.Time
-	CreatedBy          string
-	WaitingFor         string
-	OrgID              string
-	WaitingForDone     bool
-	WaitingForDoneDate time.Time
-	CreatedByDone      bool
-	CreatedByDoneDate  time.Time
+	ID                 string    `json:"id"`
+	Parent             string    `json:"parent"`
+	Title              string    `json:"title"`
+	Body               string    `json:"body"`
+	CreateDate         time.Time `json:"createdDate"`
+	CreatedBy          string    `json:"createdBy"`
+	WaitingFor         string    `json:"waitingFor"`
+	OrgID              string    `json:"orgID"`
+	WaitingForDone     bool      `json:"waitingForDone"`
+	WaitingForDoneDate time.Time `json:"waitingForDoneDate"`
+	CreatedByDone      bool      `json:"createdByDone"`
+	CreatedByDoneDate  time.Time `json:"createdByDoneDate"`
 }
 
 func (i *Item) GenerateID() {
