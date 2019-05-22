@@ -7,6 +7,7 @@ export const environment = {
   urlRegisterV1: '/api/register',
   urlLoginV1: '/api/login',
   urlNewItemV1: '/api/new-item',
+  urlMyItemsV1: '/api/my-items',
 };
 
 /*
