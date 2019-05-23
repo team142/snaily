@@ -67,6 +67,41 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func handleGetItem(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	itemReq := model.Item{}
+	if err = json.Unmarshal(b, &itemReq); err != nil {
+		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	conn, err := db.Connect(db.DefaultConfig)
+	if err != nil {
+		logrus.Errorln(err)
+		http.Error(w, "Database connection problem", http.StatusInternalServerError)
+		return
+	}
+	defer conn.Close()
+
+	var item *model.Item
+	if item, err = controller.GetItem(conn, itemReq.ID); err != nil {
+		logrus.Errorln(err)
+		http.Error(w, "Database read problem", http.StatusInternalServerError)
+		return
+	}
+
+	if err = utils.WriteXToWriter(w, *item); err != nil {
+		logrus.Errorln(err)
+	}
+
+}
+
 func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 	var b []byte
 	var err error
