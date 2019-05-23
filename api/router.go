@@ -12,22 +12,27 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Path == "/api/register" {
+	if r.URL.Path == "/api/register/v1" {
 		handleRegisterUser(w, r)
 		return
 	}
 
-	if r.URL.Path == "/api/login" {
+	if r.URL.Path == "/api/login/v1" {
 		handleLoginUser(w, r)
 		return
 	}
 
-	if r.URL.Path == "/api/new-item" {
+	if r.URL.Path == "/api/new-item/v1" {
 		handleCreateItem(w, r)
 		return
 	}
 
-	if r.URL.Path == "/api/my-items" {
+	if r.URL.Path == "/api/get-item/v1" {
+		handleGetItem(w, r)
+		return
+	}
+
+	if r.URL.Path == "/api/my-items/v1" {
 		handleGetMyItems(w, r)
 		return
 	}
