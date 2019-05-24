@@ -15,19 +15,13 @@ import (
 )
 
 func handleCreateItem(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
+	item, err := model.ReadCloserToItem(r.Body)
 	if err != nil {
+		http.Error(w, "Invalid request or body", http.StatusBadRequest)
 		logrus.Errorln(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item := &model.Item{}
-	err = json.Unmarshal(b, item)
-	if err != nil {
-		logrus.Errorln(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+
 	created, errorMsg := bus.CreateItem(item)
 	if !created {
 		http.Error(w, errorMsg, http.StatusInternalServerError)

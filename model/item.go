@@ -1,7 +1,11 @@
 package model
 
 import (
+	"encoding/json"
 	uuid "github.com/satori/go.uuid"
+	"github.com/sirupsen/logrus"
+	"io"
+	"io/ioutil"
 	"time"
 )
 
@@ -18,6 +22,21 @@ type Item struct {
 	WaitingForDoneDate time.Time `json:"waitingForDoneDate"`
 	CreatedByDone      bool      `json:"createdByDone"`
 	CreatedByDoneDate  time.Time `json:"createdByDoneDate"`
+}
+
+func ReadCloserToItem(body io.ReadCloser) (item *Item, err error) {
+	var b []byte
+	b, err = ioutil.ReadAll(body)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	item = &Item{}
+	err = json.Unmarshal(b, item)
+	if err != nil {
+		logrus.Errorln(err)
+	}
+	return
 }
 
 func (i *Item) GenerateID() {
