@@ -35,4 +35,16 @@ export class ItemService {
       });
   }
 
+  public getItem(item: ItemV1, win: Function, fail: Function): void {
+    this.http.post(window.location.origin + environment.urlGetItemV1, item)
+      .toPromise()
+      .then((result) => {
+        win(result);
+      })
+      .catch((error) => {
+        fail(error);
+      });
+  }
+
+
 }
