@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/jackc/pgx"
 	"github.com/sirupsen/logrus"
+	"github.com/team142/snaily/bus"
 	"github.com/team142/snaily/controller"
 	"github.com/team142/snaily/db"
 	"github.com/team142/snaily/model"
@@ -20,44 +21,17 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item := model.Item{}
-	err = json.Unmarshal(b, &item)
+	item := &model.Item{}
+	err = json.Unmarshal(b, item)
 	if err != nil {
 		logrus.Errorln(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item.GenerateID()
-
-	conn, err := db.Connect(db.DefaultConfig)
-	if err != nil {
-		logrus.Errorln(err)
-		http.Error(w, "Database connection problem", http.StatusInternalServerError)
-		return
-	}
-	defer conn.Close()
-
-	u, err := controller.GetUserByEmail(conn, item.WaitingFor)
-	if err != nil {
-		http.Error(w, "Database read problem", http.StatusInternalServerError)
-		logrus.Errorln(err)
-		return
-	}
-	if u == nil {
-		u = model.NewUserFromEmail(item.WaitingFor)
-		if err = controller.InsertUser(conn, u); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database write problem", http.StatusInternalServerError)
-			return
-		}
-	}
-	item.WaitingFor = u.ID
-
-	if err := controller.InsertItem(conn, &item); err != nil {
-		logrus.Errorln(err)
-		if err := utils.WriteXToWriter(w, model.MessageNewItemResponseV1{OK: false}); err != nil {
-			logrus.Errorln(err)
-		}
+	created, errorMsg := bus.CreateItem(item)
+	if !created {
+		http.Error(w, errorMsg, http.StatusInternalServerError)
+		logrus.Errorln(errorMsg)
 		return
 	}
 
