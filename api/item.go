@@ -68,6 +68,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGetItem(w http.ResponseWriter, r *http.Request) {
+
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logrus.Errorln(err)
@@ -89,6 +90,8 @@ func handleGetItem(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	result := model.MessageGetItemResponseV1{}
+
 	var item *model.Item
 	if item, err = controller.GetItem(conn, itemReq.ID); err != nil {
 		logrus.Errorln(err)
@@ -96,7 +99,30 @@ func handleGetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = utils.WriteXToWriter(w, *item); err != nil {
+	if item == nil {
+		logrus.Errorln("Item not found")
+		http.Error(w, "Not found", http.StatusNotFound)
+		return
+
+	}
+
+	result.Item = item
+
+	uCreated, err := controller.GetUser(conn, item.CreatedBy)
+	if err != nil {
+		logrus.Errorln(err)
+	} else {
+		result.Users = append(result.Users, uCreated.GetUserMessage())
+	}
+
+	uFor, err := controller.GetUser(conn, item.WaitingFor)
+	if err != nil {
+		logrus.Errorln(err)
+	} else {
+		result.Users = append(result.Users, uFor.GetUserMessage())
+	}
+
+	if err = utils.WriteXToWriter(w, result); err != nil {
 		logrus.Errorln(err)
 	}
 
@@ -165,7 +191,7 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
 					wgItems.Done()
 					continue
 				}
-				result.Users = append(result.Users, &model.MessageUserV1{ID: u.ID, Email: u.Email, FirstName: u.FirstName, LastName: u.LastName})
+				result.Users = append(result.Users, u.GetUserMessage())
 			}
 			wgItems.Done()
 		}

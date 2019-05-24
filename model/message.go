@@ -24,6 +24,11 @@ type MessageMyItemsResponseV1 struct {
 	Users        MessageUsersV1 `json:"users"`
 }
 
+type MessageGetItemResponseV1 struct {
+	Item  *Item          `json:"item"`
+	Users MessageUsersV1 `json:"users"`
+}
+
 type MessageUsersV1 []*MessageUserV1
 
 func (m *MessageUsersV1) Contains(ID string) bool {

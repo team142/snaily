@@ -44,3 +44,14 @@ func NewUserFromEmail(email string) *User {
 	}
 
 }
+
+func (u *User) GetUserMessage() *MessageUserV1 {
+	result := MessageUserV1{
+		ID:        u.ID,
+		FirstName: u.FirstName,
+		LastName:  u.LastName,
+		Email:     u.Email,
+	}
+	return &result
+
+}
