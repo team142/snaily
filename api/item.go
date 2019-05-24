@@ -22,14 +22,14 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	created, errorMsg := bus.CreateItem(item)
-	if !created {
-		http.Error(w, errorMsg, http.StatusInternalServerError)
-		logrus.Errorln(errorMsg)
+	created, err := bus.CreateItem(item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logrus.Errorln(err)
 		return
 	}
 
-	if err := utils.WriteXToWriter(w, model.MessageNewItemResponseV1{OK: true, ID: item.ID}); err != nil {
+	if err := utils.WriteXToWriter(w, model.MessageNewItemResponseV1{OK: created, ID: item.ID}); err != nil {
 		logrus.Errorln(err)
 	}
 
