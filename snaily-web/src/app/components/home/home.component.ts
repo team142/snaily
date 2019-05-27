@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   private createdByMe: ItemV1[] = [];
   private waitingForMe: ItemV1[] = [];
   private users: UserV1[] = [];
+  private loading = true;
 
   constructor(private route: ActivatedRoute, private router: Router, private itemService: ItemService) {
 
@@ -35,7 +36,7 @@ export class HomeComponent implements OnInit {
           this.createdByMe = result.createdByMe;
           this.waitingForMe = result.waitingForMe;
           console.log(result);
-
+          this.loading = false;
 
         }, (err: HttpErrorResponse) => {
           if (err.status === 403) {
