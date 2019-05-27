@@ -4,7 +4,7 @@ export class ItemV1 {
   title: string;
   body: string;
   createdBy: string;
-  WaitingFor: string;
+  waitingFor: string;
 
   constructor() {
     this.id = '';
@@ -12,7 +12,7 @@ export class ItemV1 {
     this.title = '';
     this.body = '';
     this.createdBy = '';
-    this.WaitingFor = '';
+    this.waitingFor = '';
   }
 
 }

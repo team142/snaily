@@ -4,6 +4,7 @@ import {ItemService} from '../../services/item.service';
 import {ItemV1} from '../../model/item-v1';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Messages} from '../../util/Messages';
+import {UserV1} from '../../model/user-v1';
 
 declare var Swal: any;
 
@@ -14,6 +15,9 @@ declare var Swal: any;
 })
 export class ViewComponent implements OnInit {
   @Input() id: string;
+
+  private item: ItemV1 = new ItemV1();
+  private users: UserV1[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +46,10 @@ export class ViewComponent implements OnInit {
     i.id = this.id;
     this.itemService.getItem(i, (result) => {
         console.log(result);
+
+        this.item = result.item;
+        this.users = result.users;
+
       }, (err: HttpErrorResponse) => {
         if (err.status === 403) {
           Messages.AccessDenied();
@@ -51,4 +59,25 @@ export class ViewComponent implements OnInit {
       }
     );
   }
+
+
+  public getWaiting(): string {
+    for (const o of this.users) {
+      console.log(o.id + ', ' + this.item.createdBy);
+      if (o.id === this.item.createdBy) {
+        return o.firstName + ' ' + o.lastName;
+      }
+    }
+    return '?';
+  }
+
+  public getWaitingFor(): string {
+    for (const o of this.users) {
+      if (o.id === this.item.waitingFor) {
+        return o.firstName + ' ' + o.lastName;
+      }
+    }
+    return '?';
+  }
+
 }

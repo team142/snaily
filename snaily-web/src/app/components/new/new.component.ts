@@ -45,7 +45,7 @@ export class NewComponent implements OnInit {
     i.title = this.title;
     i.body = this.body;
     i.createdBy = UserState.getMyID();
-    i.WaitingFor = this.email;
+    i.waitingFor = this.email;
 
 
     this.itemService.post(i, (result) => (
