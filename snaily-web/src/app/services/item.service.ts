@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {ItemV1} from '../model/item-v1';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {MyItemsRequestV1} from '../model/my-items-request-v1';
 import {UserState} from '../model/state/userState';
 
 @Injectable({
@@ -32,8 +31,8 @@ export class ItemService {
 
   }
 
-  public getMyItems(item: MyItemsRequestV1, win: Function, fail: Function): void {
-    this.http.post(window.location.origin + environment.urlMyItemsV1, item, {
+  public getMyItems(win: Function, fail: Function): void {
+    this.http.post(window.location.origin + environment.urlMyItemsV1, {}, {
         headers: new HttpHeaders().append('key', UserState.getMyKey())
       }
     ).toPromise()
