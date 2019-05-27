@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
@@ -12,6 +11,16 @@ func buildSessionCache() *SessionCache {
 	result := &SessionCache{
 		store: make(map[string]SessionRow),
 	}
+	go func(cache *SessionCache) {
+		for {
+			time.Sleep(1 * time.Minute)
+			for key, row := range cache.store {
+				if row.Expired() {
+					delete(cache.store, key)
+				}
+			}
+		}
+	}(result)
 	return result
 }
 
@@ -26,16 +35,16 @@ type SessionRow struct {
 	ValidUntil time.Time
 }
 
+func (s *SessionRow) Expired() bool {
+	return s.ValidUntil.After(time.Now())
+}
+
 func (s *SessionCache) SessionValid(key string) (bool, string) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	if r, ok := s.store[key]; ok {
-		fmt.Println("SV: FOUND")
-		result := r.ValidUntil.After(time.Now())
-		fmt.Println("SV: FOUND ", result)
-		return result, r.UserID
+		return r.Expired(), r.UserID
 	}
-	fmt.Println("SV: NOT FOUND", "key:", key)
 	return false, ""
 
 }
@@ -48,7 +57,6 @@ func (s *SessionCache) SetSession(key, ID string, duration time.Duration) {
 		UserID:     ID,
 		ValidUntil: time.Now().Add(duration),
 	}
-	fmt.Println("SS ", "Key:", key, "ID:", ID, duration)
 	s.store[key] = r
 	return
 }
