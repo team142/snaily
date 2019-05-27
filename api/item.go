@@ -14,13 +14,14 @@ import (
 	"sync"
 )
 
-func handleCreateItem(w http.ResponseWriter, r *http.Request) {
+func handleCreateItem(w http.ResponseWriter, r *http.Request, ID string) {
 	item, err := model.ReadCloserToItem(r.Body)
 	if err != nil {
 		http.Error(w, "Invalid request or body", http.StatusBadRequest)
 		logrus.Errorln(err)
 		return
 	}
+	item.CreatedBy = ID
 
 	var created bool
 	if created, err = bus.CreateItem(item); err != nil {
@@ -35,7 +36,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func handleGetItem(w http.ResponseWriter, r *http.Request) {
+func handleGetItem(w http.ResponseWriter, r *http.Request, ID string) {
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -96,7 +97,7 @@ func handleGetItem(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func handleGetMyItems(w http.ResponseWriter, r *http.Request) {
+func handleGetMyItems(w http.ResponseWriter, r *http.Request, ID string) {
 	var b []byte
 	var err error
 	if b, err = ioutil.ReadAll(r.Body); err != nil {

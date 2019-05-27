@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/controller"
 	"github.com/team142/snaily/db"
@@ -86,10 +86,12 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	dbUser, err = controller.GetUserByEmail(conn, user.Email)
 	if dbUser != nil && dbUser.ID != "" && dbUser.CheckPassword(user.Password) {
 
-		db.GlobalSessionCache.SetSession(dbUser.ID, dbUser.ID, 24*time.Hour)
+		key := uuid.NewV4().String()
+		db.GlobalSessionCache.SetSession(key, dbUser.ID, 24*time.Hour)
 		if err = utils.WriteXToWriter(w, model.MessageLoginResponseV1{
 			OK:  true,
-			Key: dbUser.ID,
+			Key: key,
+			ID:  dbUser.ID,
 		}); err != nil {
 			logrus.Errorln(err)
 		}

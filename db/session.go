@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -25,13 +26,17 @@ type SessionRow struct {
 	ValidUntil time.Time
 }
 
-func (s *SessionCache) SessionValid(key string) bool {
+func (s *SessionCache) SessionValid(key string) (bool, string) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	if r, ok := s.store[key]; ok {
-		return r.ValidUntil.After(time.Now())
+		fmt.Println("SV: FOUND")
+		result := r.ValidUntil.After(time.Now())
+		fmt.Println("SV: FOUND ", result)
+		return result, r.UserID
 	}
-	return false
+	fmt.Println("SV: NOT FOUND", "key:", key)
+	return false, ""
 
 }
 
@@ -43,6 +48,7 @@ func (s *SessionCache) SetSession(key, ID string, duration time.Duration) {
 		UserID:     ID,
 		ValidUntil: time.Now().Add(duration),
 	}
+	fmt.Println("SS ", "Key:", key, "ID:", ID, duration)
 	s.store[key] = r
 	return
 }

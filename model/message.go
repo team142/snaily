@@ -12,6 +12,7 @@ type MessageRegisterResponseV1 struct {
 type MessageLoginResponseV1 struct {
 	OK  bool   `json:"ok"`
 	Key string `json:"key"`
+	ID  string `json:"id"`
 }
 
 type MessageMyItemsRequestV1 struct {
