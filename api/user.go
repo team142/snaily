@@ -10,6 +10,7 @@ import (
 	"github.com/team142/snaily/utils"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +86,7 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	dbUser, err = controller.GetUserByEmail(conn, user.Email)
 	if dbUser != nil && dbUser.ID != "" && dbUser.CheckPassword(user.Password) {
 
+		db.GlobalSessionCache.SetSession(dbUser.ID, dbUser.ID, 24*time.Hour)
 		if err = utils.WriteXToWriter(w, model.MessageLoginResponseV1{
 			OK:  true,
 			Key: dbUser.ID,
