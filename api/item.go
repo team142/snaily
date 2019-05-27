@@ -108,8 +108,6 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request, ID string) {
 	}
 	defer conn.Close()
 
-	//TODO: FOR NOW THE KEY IS THE USER ID. THIS MUST CHANGE
-
 	user, err := controller.GetUser(conn, ID)
 	if err != nil {
 		logrus.Errorln(err)
