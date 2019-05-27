@@ -1,2 +1,44 @@
+<div class="col-md-10">
+  <h1>People waiting for me</h1>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Title</th>
+      <th scope="col">Waiting</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of waitingForMe">
+      <th>DATE</th>
+      <td>{{item.title}}</td>
+      <td>{{getUserFullname(item.createdBy)}}</td>
+      <td><a class="btn btn-sm btn-success" href="./view?id={{item.id}}">View</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-home is where this text is
+
+<div class="col-md-10">
+  <h1>I&apos;m waiting for</h1>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Title</th>
+      <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of createdByMe">
+      <th>DATE</th>
+      <td>{{item.title}}</td>
+      <td><a class="btn btn-sm btn-success" href="./view?id={{item.id}}">View</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+

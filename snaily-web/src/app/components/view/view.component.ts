@@ -63,7 +63,6 @@ export class ViewComponent implements OnInit {
 
   public getWaiting(): string {
     for (const o of this.users) {
-      console.log(o.id + ', ' + this.item.createdBy);
       if (o.id === this.item.createdBy) {
         return o.firstName + ' ' + o.lastName;
       }
