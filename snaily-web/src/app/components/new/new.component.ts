@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {ItemService} from '../../services/item.service';
 import {ItemV1} from '../../model/item-v1';
 import {UserState} from '../../model/state/userState';
+import {HttpErrorResponse} from '@angular/common/http';
 
 declare var Swal: any;
 
@@ -49,8 +50,20 @@ export class NewComponent implements OnInit {
     this.itemService.post(i, (result) => (
         this.animateSuccess(result)
       ),
-      (error) => {
-        alert('Error - ' + error);
+      (err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          Swal.fire({
+            position: 'middle-end',
+            type: 'error',
+            title: 'Access Denied',
+            showConfirmButton: false,
+            timer: 1800
+          });
+          this.router.navigate(['./login']);
+
+          return;
+        }
+        alert('Error - ' + err);
       }
     );
   }

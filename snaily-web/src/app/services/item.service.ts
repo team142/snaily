@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ItemV1} from '../model/item-v1';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {MyItemsRequestV1} from '../model/my-items-request-v1';
 import {UserState} from '../model/state/userState';
@@ -23,8 +23,11 @@ export class ItemService {
       .then((result) => {
         win(result);
       })
-      .catch((error) => {
-        fail(error);
+      .catch((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          UserState.logout();
+        }
+        fail(err);
       });
 
   }
@@ -38,6 +41,7 @@ export class ItemService {
         win(result);
       })
       .catch((error) => {
+        alert(error);
         fail(error);
       });
   }
@@ -51,6 +55,7 @@ export class ItemService {
         win(result);
       })
       .catch((error) => {
+        alert(error);
         fail(error);
       });
   }

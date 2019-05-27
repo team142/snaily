@@ -10,6 +10,8 @@ export class UserState {
 
   public static logout() {
     localStorage.setItem('login', 'false');
+    this.setMyID('');
+    this.setMyKey('');
   }
 
   public static setMyKey(v: string) {
