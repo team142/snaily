@@ -30,7 +30,7 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !auth {
-		logrus.Println("Could not authenticate with key...")
+		logrus.Println("Access denied with key...")
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte(""))
 		return
