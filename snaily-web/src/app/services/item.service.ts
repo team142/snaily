@@ -16,7 +16,7 @@ export class ItemService {
 
   public post(item: ItemV1, win: Function, fail: Function): void {
     this.http.post(window.location.origin + environment.urlNewItemV1, item, {
-        headers: new HttpHeaders().append('key', UserState.getKey())
+        headers: new HttpHeaders().append('key', UserState.getMyKey())
       }
     )
       .toPromise()
@@ -31,7 +31,7 @@ export class ItemService {
 
   public getMyItems(item: MyItemsRequestV1, win: Function, fail: Function): void {
     this.http.post(window.location.origin + environment.urlMyItemsV1, item, {
-        headers: new HttpHeaders().append('key', UserState.getKey())
+        headers: new HttpHeaders().append('key', UserState.getMyKey())
       }
     ).toPromise()
       .then((result) => {
@@ -44,7 +44,7 @@ export class ItemService {
 
   public getItem(item: ItemV1, win: Function, fail: Function): void {
     this.http.post(window.location.origin + environment.urlGetItemV1, item, {
-        headers: new HttpHeaders().append('key', UserState.getKey())
+        headers: new HttpHeaders().append('key', UserState.getMyKey())
       }
     ).toPromise()
       .then((result) => {

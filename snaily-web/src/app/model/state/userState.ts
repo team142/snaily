@@ -12,12 +12,20 @@ export class UserState {
     localStorage.setItem('login', 'false');
   }
 
-  public static setKey(v: string) {
+  public static setMyKey(v: string) {
     localStorage.setItem('key', v);
   }
 
-  public static getKey(): string {
+  public static getMyKey(): string {
     return localStorage.getItem('key');
+  }
+
+  public static setMyID(v: string) {
+    localStorage.setItem('id', v);
+  }
+
+  public static getMyID(): string {
+    return localStorage.getItem('id');
   }
 
 

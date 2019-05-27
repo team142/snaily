@@ -42,7 +42,7 @@ export class NewComponent implements OnInit {
     const i = new ItemV1();
     i.title = this.title;
     i.body = this.body;
-    i.createdBy = UserState.getKey();
+    i.createdBy = UserState.getMyID();
     i.WaitingFor = this.email;
 
 
