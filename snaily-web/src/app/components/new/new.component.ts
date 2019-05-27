@@ -72,7 +72,8 @@ export class NewComponent implements OnInit {
     });
 
     setTimeout(() => {
-      this.router.navigate(['./']);
+      window.location.href = './view?id=' + result.id;
+      // this.router.navigate(['./view?id=' + result.id]); //TODO: use router
     }, 3200);
 
   }
