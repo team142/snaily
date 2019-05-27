@@ -32,7 +32,7 @@ func CreateItem(item *model.Item) (created bool, err error) {
 	}
 	item.WaitingFor = u.ID
 
-	if err := controller.InsertItem(conn, &item); err != nil {
+	if err := controller.InsertItem(conn, item); err != nil {
 		logrus.Errorln(err)
 		return false, errors.New("Database write problem")
 	}
