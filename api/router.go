@@ -16,7 +16,9 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 	auth, ID := checkKey(r)
 
 	/*
-		NO AUTH
+		#
+			NO AUTH
+		#
 	*/
 	if r.URL.Path == "/api/register/v1" {
 		handleRegisterUser(w, r)
@@ -33,10 +35,11 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(""))
 		return
 	}
-	logrus.Println("Authentication OK")
 
 	/*
-		AUTH REQUIRED
+		#
+			AUTH REQUIRED
+		#
 	*/
 	if r.URL.Path == "/api/new-item/v1" {
 		handleCreateItem(w, r, ID)
