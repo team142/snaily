@@ -47,10 +47,14 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  public getUserFullname(id: string): string {
+  public getUserFullName(id: string): string {
     for (const o of this.users) {
       if (o.id === id) {
-        return o.firstName + ' ' + o.lastName;
+        if (o.firstName === '' || o.lastName === '') {
+          return o.email;
+        }
+        const r = o.firstName + ' ' + o.lastName;
+        return r;
       }
     }
     return '?';

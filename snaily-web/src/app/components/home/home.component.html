@@ -5,7 +5,7 @@
     <tr class="table-light">
       <th scope="col">Date</th>
       <th scope="col">Title</th>
-      <th scope="col">Waiting</th>
+      <th scope="col">Who is waiting</th>
       <th scope="col">Actions</th>
     </tr>
     </thead>
@@ -13,7 +13,7 @@
     <tr class="animated fadeIn" *ngFor="let item of waitingForMe">
       <th>DATE</th>
       <td>{{item.title}}</td>
-      <td>{{getUserFullname(item.createdBy)}}</td>
+      <td>{{getUserFullName(item.createdBy)}}</td>
       <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
     </tbody>
@@ -28,6 +28,7 @@
     <tr class="table-light">
       <th scope="col">Date</th>
       <th scope="col">Title</th>
+      <th scope="col">I&apos;m waiting for</th>
       <th scope="col">Actions</th>
     </tr>
     </thead>
@@ -35,6 +36,7 @@
     <tr class="animated fadeIn" *ngFor="let item of createdByMe">
       <th>DATE</th>
       <td>{{item.title}}</td>
+      <td>{{getUserFullName(item.waitingFor)}}</td>
       <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
     </tbody>

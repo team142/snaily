@@ -61,22 +61,18 @@ export class ViewComponent implements OnInit {
   }
 
 
-  public getWaiting(): string {
+  public getUserFullName(id: string): string {
     for (const o of this.users) {
-      if (o.id === this.item.createdBy) {
-        return o.firstName + ' ' + o.lastName;
+      if (o.id === id) {
+        if (o.firstName === '' || o.lastName === '') {
+          return o.email;
+        }
+        const r = o.firstName + ' ' + o.lastName;
+        return r;
       }
     }
     return '?';
   }
 
-  public getWaitingFor(): string {
-    for (const o of this.users) {
-      if (o.id === this.item.waitingFor) {
-        return o.firstName + ' ' + o.lastName;
-      }
-    }
-    return '?';
-  }
 
 }
