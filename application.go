@@ -68,6 +68,7 @@ func staticFileServer(w http.ResponseWriter, r *http.Request) {
 	name := fmt.Sprint("/snaily-web", r.URL.Path)
 
 	if name == "/snaily-web/" {
+		w.Header().Add("Cache-Control", "no-store")
 		name = "/snaily-web/index.html"
 	}
 
@@ -79,6 +80,7 @@ func staticFileServer(w http.ResponseWriter, r *http.Request) {
 
 	if !strings.Contains(name, ".") {
 		logrus.Println("For: ", r.URL.Path, ", Serving: ", "/snaily-web/index.html")
+		w.Header().Add("Cache-Control", "no-store")
 		http.ServeFile(w, r, "/snaily-web/index.html")
 		return
 	}
