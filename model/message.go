@@ -42,7 +42,7 @@ func (m *MessageUsersV1) Contains(ID string) bool {
 }
 
 type MessageUserV1 struct {
-	ID        string `json:"ID"`
+	ID        string `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
