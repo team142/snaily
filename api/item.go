@@ -98,19 +98,7 @@ func handleGetItem(w http.ResponseWriter, r *http.Request, ID string) {
 }
 
 func handleGetMyItems(w http.ResponseWriter, r *http.Request, ID string) {
-	var b []byte
 	var err error
-	if b, err = ioutil.ReadAll(r.Body); err != nil {
-		logrus.Errorln(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	req := model.MessageMyItemsRequestV1{}
-	if err = json.Unmarshal(b, &req); err != nil {
-		logrus.Errorln(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 
 	var conn *pgx.Conn
 	if conn, err = db.Connect(db.DefaultConfig); err != nil {
@@ -122,7 +110,7 @@ func handleGetMyItems(w http.ResponseWriter, r *http.Request, ID string) {
 
 	//TODO: FOR NOW THE KEY IS THE USER ID. THIS MUST CHANGE
 
-	user, err := controller.GetUser(conn, req.Key)
+	user, err := controller.GetUser(conn, ID)
 	if err != nil {
 		logrus.Errorln(err)
 		http.Error(w, "Authentication error", http.StatusBadRequest)

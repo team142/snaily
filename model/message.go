@@ -15,10 +15,6 @@ type MessageLoginResponseV1 struct {
 	ID  string `json:"id"`
 }
 
-type MessageMyItemsRequestV1 struct {
-	Key string `json:"key"`
-}
-
 type MessageMyItemsResponseV1 struct {
 	CreatedByMe  []*Item        `json:"createdByMe"`
 	WaitingForMe []*Item        `json:"waitingForMe"`
