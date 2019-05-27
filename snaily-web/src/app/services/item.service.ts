@@ -40,9 +40,11 @@ export class ItemService {
       .then((result) => {
         win(result);
       })
-      .catch((error) => {
-        alert(error);
-        fail(error);
+      .catch((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          UserState.logout();
+        }
+        fail(err);
       });
   }
 
@@ -54,9 +56,11 @@ export class ItemService {
       .then((result) => {
         win(result);
       })
-      .catch((error) => {
-        alert(error);
-        fail(error);
+      .catch((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          UserState.logout();
+        }
+        fail(err);
       });
   }
 
