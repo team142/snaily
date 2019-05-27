@@ -31,9 +31,9 @@ export class HomeComponent implements OnInit {
   private refresh() {
     this.itemService
       .getMyItems((result) => {
+          this.users = result.users;
           this.createdByMe = result.createdByMe;
           this.waitingForMe = result.waitingForMe;
-          this.users = result.users;
           console.log(result);
 
 

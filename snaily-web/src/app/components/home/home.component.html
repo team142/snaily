@@ -1,8 +1,8 @@
-<div class="col-md-10">
+<div style="margin-top: 50px;" class="col-md-12">
   <h1>People waiting for me</h1>
   <table class="table table-hover">
     <thead>
-    <tr>
+    <tr class="table-light">
       <th scope="col">Date</th>
       <th scope="col">Title</th>
       <th scope="col">Waiting</th>
@@ -10,32 +10,32 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of waitingForMe">
+    <tr class="animated fadeIn" *ngFor="let item of waitingForMe">
       <th>DATE</th>
       <td>{{item.title}}</td>
       <td>{{getUserFullname(item.createdBy)}}</td>
-      <td><a class="btn btn-sm btn-success" href="./view?id={{item.id}}">View</a></td>
+      <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
     </tbody>
   </table>
 </div>
 
 
-<div class="col-md-10">
+<div style="margin-top: 50px;" class="col-md-12">
   <h1>I&apos;m waiting for</h1>
   <table class="table table-hover">
     <thead>
-    <tr>
+    <tr class="table-light">
       <th scope="col">Date</th>
       <th scope="col">Title</th>
       <th scope="col">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of createdByMe">
+    <tr class="animated fadeIn" *ngFor="let item of createdByMe">
       <th>DATE</th>
       <td>{{item.title}}</td>
-      <td><a class="btn btn-sm btn-success" href="./view?id={{item.id}}">View</a></td>
+      <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
     </tbody>
   </table>
