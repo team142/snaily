@@ -1,7 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {ItemService} from '../../services/item.service';
 import {ItemV1} from '../../model/item-v1';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Messages} from '../../util/Messages';
+
+declare var Swal: any;
 
 @Component({
   selector: 'app-browse',
@@ -13,7 +17,8 @@ export class ViewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private router: Router,
   ) {
   }
 
@@ -36,11 +41,14 @@ export class ViewComponent implements OnInit {
     const i = new ItemV1();
     i.id = this.id;
     this.itemService.getItem(i, (result) => {
-      console.log(result);
-    }, (error) => {
-      console.log(error);
-    });
-
+        console.log(result);
+      }, (err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          Messages.AccessDenied();
+          this.router.navigate(['./login']);
+          return;
+        }
+      }
+    );
   }
-
 }
