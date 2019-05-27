@@ -10,14 +10,24 @@ export class UserState {
 
   public static logout() {
     localStorage.setItem('login', 'false');
+    this.setMyID('');
+    this.setMyKey('');
   }
 
-  public static setKey(v: string) {
+  public static setMyKey(v: string) {
     localStorage.setItem('key', v);
   }
 
-  public static getKey(): string {
+  public static getMyKey(): string {
     return localStorage.getItem('key');
+  }
+
+  public static setMyID(v: string) {
+    localStorage.setItem('id', v);
+  }
+
+  public static getMyID(): string {
+    return localStorage.getItem('id');
   }
 
 

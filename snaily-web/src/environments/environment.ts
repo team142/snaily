@@ -4,8 +4,11 @@
 
 export const environment = {
   production: false,
-  urlRegisterV1: '/api/register',
-  urlLoginV1: '/api/login'
+  urlRegisterV1: '/api/register/v1',
+  urlLoginV1: '/api/login/v1',
+  urlNewItemV1: '/api/new-item/v1',
+  urlMyItemsV1: '/api/my-items/v1',
+  urlGetItemV1: '/api/get-item/v1',
 };
 
 /*

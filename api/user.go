@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/controller"
 	"github.com/team142/snaily/db"
@@ -10,63 +10,66 @@ import (
 	"github.com/team142/snaily/utils"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
+	var b []byte
+	var err error
+	if b, err = ioutil.ReadAll(r.Body); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	user := model.User{}
-	err = json.Unmarshal(b, &user)
-	if err != nil {
+	if err = json.Unmarshal(b, &user); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//Persist or store
 	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, "Database connection error", http.StatusInternalServerError)
 		return
 	}
 	defer conn.Close()
 
 	exists := controller.UserExists(conn, user.Email)
 	if exists {
-		err := utils.WriteXToWriter(w, model.MessageRegisterResponseV1{OK: false})
-		if err != nil {
-			logrus.Errorln(err)
-		}
-
-	} else {
-		user.ID = uuid.NewV4().String()
-		user.SaltAndSetPassword()
-		err = controller.InsertUser(conn, &user)
-		if err != nil {
+		if err := utils.WriteXToWriter(w, model.MessageRegisterResponseV1{OK: false}); err != nil {
 			logrus.Errorln(err)
 			return
 		}
-		err := utils.WriteXToWriter(w, model.MessageRegisterResponseV1{OK: true})
-		if err != nil {
+	} else {
+		user.ID = uuid.NewV4().String()
+		user.SaltAndSetPassword()
+		if err = controller.InsertUser(conn, &user); err != nil {
+			logrus.Errorln(err)
+			http.Error(w, "Database write error", http.StatusInternalServerError)
+			return
+		}
+		if err = utils.WriteXToWriter(w, model.MessageRegisterResponseV1{OK: true}); err != nil {
 			logrus.Errorln(err)
 		}
-
 	}
 	return
 }
 
 func handleLoginUser(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
+	var b []byte
+	var err error
+
+	if b, err = ioutil.ReadAll(r.Body); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	user := model.User{}
-	err = json.Unmarshal(b, &user)
-	if err != nil {
+	if err = json.Unmarshal(b, &user); err != nil {
 		logrus.Errorln(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -74,6 +77,7 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
 		logrus.Errorln(err)
+		http.Error(w, "Database connection error", http.StatusInternalServerError)
 		return
 	}
 	defer conn.Close()
@@ -82,20 +86,20 @@ func handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	dbUser, err = controller.GetUserByEmail(conn, user.Email)
 	if dbUser != nil && dbUser.ID != "" && dbUser.CheckPassword(user.Password) {
 
-		err := utils.WriteXToWriter(w, model.MessageLoginResponseV1{
+		key := uuid.NewV4().String()
+		db.GlobalSessionCache.SetSession(key, dbUser.ID, 24*time.Hour)
+		if err = utils.WriteXToWriter(w, model.MessageLoginResponseV1{
 			OK:  true,
-			Key: dbUser.ID,
-		})
-		if err != nil {
+			Key: key,
+			ID:  dbUser.ID,
+		}); err != nil {
 			logrus.Errorln(err)
 		}
 
 	} else {
-		err := utils.WriteXToWriter(w, model.MessageLoginResponseV1{OK: false})
-		if err != nil {
+		if err = utils.WriteXToWriter(w, model.MessageLoginResponseV1{OK: false}); err != nil {
 			logrus.Errorln(err)
 		}
-
 	}
 	return
 }

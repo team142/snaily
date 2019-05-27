@@ -78,7 +78,8 @@ export class LoginComponent implements OnInit {
     this.loginService.post(this.loginReq, (result) => {
       if (result.ok === true) {
         UserState.login();
-        UserState.setKey(result.key);
+        UserState.setMyKey(result.key);
+        UserState.setMyID(result.id);
 
         Swal.fire({
           position: 'middle-end',
