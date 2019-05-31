@@ -55,9 +55,10 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 		e := model.Mail{
 			FromEmail: "notify@dependmap.com",
 			ToEmail:   user.Email,
-			Subject:   "welcome",
+			Subject:   "Welcome",
 			BodyHTML:  strings.ReplaceAll("XXX", model.WelcomeMailTemplate, user.FirstName),
 		}
+		logrus.Println("Sending email", e.ToEmail)
 		if err = email.SendMail(&e); err != nil {
 			logrus.Errorln(err)
 		}
