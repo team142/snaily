@@ -6,10 +6,12 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/controller"
 	"github.com/team142/snaily/db"
+	"github.com/team142/snaily/email"
 	"github.com/team142/snaily/model"
 	"github.com/team142/snaily/utils"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -50,6 +52,16 @@ func handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Database write error", http.StatusInternalServerError)
 			return
 		}
+		e := model.Mail{
+			FromEmail: "notify@dependmap.com",
+			ToEmail:   user.Email,
+			Subject:   "welcome",
+			BodyHTML:  strings.ReplaceAll("XXX", model.WelcomeMailTemplate, user.FirstName),
+		}
+		if err = email.SendMail(&e); err != nil {
+			logrus.Errorln(err)
+		}
+
 		if err = utils.WriteXToWriter(w, model.MessageRegisterResponseV1{OK: true}); err != nil {
 			logrus.Errorln(err)
 		}
