@@ -5,7 +5,7 @@ export class Messages {
     Swal.fire({
       position: 'middle-end',
       type: 'error',
-      title: 'Access Denied',
+      title: 'Login Required',
       showConfirmButton: false,
       timer: 1800
     });

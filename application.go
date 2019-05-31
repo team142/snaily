@@ -7,6 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
 	"github.com/team142/snaily/db"
+	"github.com/team142/snaily/email"
+	"github.com/team142/snaily/model"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -28,6 +30,7 @@ var Port = flag.Uint64("pgport", 5000, "PG port")
 func main() {
 	flag.Parse()
 
+	setMailClientConfig()
 	setDBDefaultConfig()
 
 	router := mux.NewRouter()
@@ -47,6 +50,17 @@ func main() {
 	//The server
 	http.Handle("/", router)
 	log.Fatal(http.ListenAndServe(*addr, nil))
+}
+
+func setMailClientConfig() {
+	email.GlobalMailConfig = model.OutgoingMailConfig{
+		SMTPHost: "smtp.migadu.com",
+		Port:     587,
+		Username: "notify@dependmap.com",
+		Password: os.Getenv("MAIL_PASSWORD"),
+		UseTLS:   true,
+	}
+
 }
 
 func setDBDefaultConfig() {
