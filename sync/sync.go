@@ -47,7 +47,7 @@ func SetupSync(es entitysync.EntitySync) {
 	*/
 	var entityItems shared.EntityType = "items"
 	es.RegisterEntityAndDBHandler(entityItems, func(entityKey shared.EntityKey, secret string, handler shared.ByteHandler) {
-		ok, ID := db.GlobalSessionCache.SessionValid(secret)
+		ok, _ := db.GlobalSessionCache.SessionValid(secret)
 		if !ok {
 			logrus.Errorln("Access denied based on secret", secret)
 			return
