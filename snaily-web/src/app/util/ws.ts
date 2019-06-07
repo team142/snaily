@@ -3,6 +3,17 @@ import {UserState} from '../model/state/userState';
 export class WS {
   static socket;
 
+  static getWSUrl(): string {
+    let url = '';
+    if (window.location.protocol === 'https:') {
+      url = 'wss://';
+    } else {
+      url = 'ws://';
+    }
+    url += window.location.host + '/ws/entity-sync/', UserState.getMyKey();
+    return url;
+  }
+
   static send(msg: string) {
     try {
       WS.socket.send(msg);
@@ -20,7 +31,7 @@ export class WS {
   }
 
   static SetupFromScratch() {
-    WS.Setup('ws://' + window.location.host + '/ws/entity-sync/', UserState.getMyKey());
+    WS.Setup(WS.getWSUrl(), UserState.getMyKey());
   }
 
   static Setup(url: string, key: string) {
