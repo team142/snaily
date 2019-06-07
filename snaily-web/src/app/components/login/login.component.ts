@@ -5,6 +5,8 @@ import {RegisterService} from '../../services/register.service';
 import {MessageRegisterRequestV1} from '../../model/register-request-v1';
 import {MessageLoginRequestV1} from '../../model/login-request-v1';
 import {LoginService} from '../../services/login.service';
+import {environment} from '../../../environments/environment';
+import {WS} from '../../util/ws';
 
 declare var Swal: any;
 
@@ -80,6 +82,9 @@ export class LoginComponent implements OnInit {
         UserState.login();
         UserState.setMyKey(result.key);
         UserState.setMyID(result.id);
+
+        WS.SetupFromScratch();
+
 
         Swal.fire({
           position: 'middle-end',

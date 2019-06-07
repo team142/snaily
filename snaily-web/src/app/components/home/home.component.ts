@@ -6,6 +6,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Messages} from '../../util/Messages';
 import {ItemV1} from '../../model/item-v1';
 import {UserV1} from '../../model/user-v1';
+import {WS} from '../../util/ws';
+import {UserState} from '../../model/state/userState';
 
 
 @Component({
@@ -26,18 +28,28 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.refresh();
+
+    setTimeout(() => {
+      WS.handler = (result) => {
+        this.handleResult(JSON.parse(result));
+      };
+      const action = {
+        action: 'subscribe',
+        body: {
+          entity: 'home',
+          id: UserState.getMyID(),
+        },
+      };
+      WS.send(JSON.stringify(action));
+    }, 1000);
+
   }
 
 
   private refresh() {
     this.itemService
       .getMyItems((result) => {
-          this.users = result.users;
-          this.createdByMe = result.createdByMe;
-          this.waitingForMe = result.waitingForMe;
-          console.log(result);
-          this.loading = false;
-
+          this.handleResult(result);
         }, (err: HttpErrorResponse) => {
           if (err.status === 403) {
             Messages.AccessDenied();
@@ -47,6 +59,55 @@ export class HomeComponent implements OnInit {
         }
       );
   }
+
+  public handleResult(result) {
+    this.users = result.users;
+    this.updateLists(result.waitingForMe, result.createdByMe);
+    this.loading = false;
+
+  }
+
+
+  public updateLists(waiting: ItemV1[], created: ItemV1[]) {
+    for (const a of waiting) {
+      const index = this.indexOf(this.waitingForMe, a.id);
+      if (index === -1) {
+        this.waitingForMe.push(a);
+      } else {
+        // this.waitingForMe[index] = a;
+      }
+    }
+
+    for (const a of created) {
+      const index = this.indexOf(this.createdByMe, a.id);
+      if (index === -1) {
+        this.createdByMe.push(a);
+      } else {
+        // this.createdByMe[index] = a;
+      }
+    }
+
+  }
+
+  private indexOf(arr: ItemV1[], id: string): number {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].id === id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+  private idInArr(arr: ItemV1[], id: string): boolean {
+    for (const a of arr) {
+      if (a.id === id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   public getUserFullName(id: string): string {
     for (const o of this.users) {
