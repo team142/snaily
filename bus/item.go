@@ -151,3 +151,46 @@ func GetMyItems(ID string) (result model.MessageMyItemsResponseV1, err error) {
 	return
 
 }
+
+func GetItem(itemID string) (result model.MessageGetItemResponseV1, err error) {
+
+	conn, err := db.Connect(db.DefaultConfig)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	defer conn.Close()
+
+	result = model.MessageGetItemResponseV1{}
+
+	var item *model.Item
+	if item, err = controller.GetItem(conn, itemID); err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
+	if item == nil {
+		logrus.Errorln("Item not found")
+		return
+
+	}
+
+	result.Item = item
+
+	uCreated, err := controller.GetUser(conn, item.CreatedBy)
+	if err != nil {
+		logrus.Errorln(err)
+	} else {
+		result.Users = append(result.Users, uCreated.GetUserMessage())
+	}
+
+	uFor, err := controller.GetUser(conn, item.WaitingFor)
+	if err != nil {
+		logrus.Errorln(err)
+	} else {
+		result.Users = append(result.Users, uFor.GetUserMessage())
+	}
+
+	return
+
+}

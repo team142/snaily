@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/bus"
-	"github.com/team142/snaily/controller"
-	"github.com/team142/snaily/db"
 	"github.com/team142/snaily/model"
 	"github.com/team142/snaily/utils"
 	"io/ioutil"
@@ -49,45 +47,7 @@ func handleGetItem(w http.ResponseWriter, r *http.Request, ID string) {
 		return
 	}
 
-	conn, err := db.Connect(db.DefaultConfig)
-	if err != nil {
-		logrus.Errorln(err)
-		http.Error(w, "Database connection problem", http.StatusInternalServerError)
-		return
-	}
-	defer conn.Close()
-
-	result := model.MessageGetItemResponseV1{}
-
-	var item *model.Item
-	if item, err = controller.GetItem(conn, itemReq.ID); err != nil {
-		logrus.Errorln(err)
-		http.Error(w, "Database read problem", http.StatusInternalServerError)
-		return
-	}
-
-	if item == nil {
-		logrus.Errorln("Item not found")
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-
-	}
-
-	result.Item = item
-
-	uCreated, err := controller.GetUser(conn, item.CreatedBy)
-	if err != nil {
-		logrus.Errorln(err)
-	} else {
-		result.Users = append(result.Users, uCreated.GetUserMessage())
-	}
-
-	uFor, err := controller.GetUser(conn, item.WaitingFor)
-	if err != nil {
-		logrus.Errorln(err)
-	} else {
-		result.Users = append(result.Users, uFor.GetUserMessage())
-	}
+	result, err := bus.GetItem(itemReq.ID)
 
 	if err = utils.WriteXToWriter(w, result); err != nil {
 		logrus.Errorln(err)
