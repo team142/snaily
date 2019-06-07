@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/just1689/entity-sync/entitysync"
+	"github.com/just1689/entity-sync/es"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
 	"github.com/team142/snaily/db"
@@ -38,12 +38,12 @@ func main() {
 
 	router := mux.NewRouter()
 
-	config := entitysync.Config{
+	config := es.Config{
 		NSQAddr: *nsqAddr,
 		Mux:     router,
 	}
-	es := entitysync.Setup(config)
-	sync.SetupSync(es)
+	entitySync := es.Setup(config)
+	sync.SetupSync(entitySync)
 
 	//Handles all API calls
 	router.PathPrefix("/api").HandlerFunc(api.HandleIncoming)

@@ -8,7 +8,7 @@ require (
 	github.com/gorilla/mux v1.7.2
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.4.0+incompatible
-	github.com/just1689/entity-sync v0.0.0-20190607080610-7e0dc204df8e
+	github.com/just1689/entity-sync v0.0.0-20190607203844-cb3dafb168ed // indirect
 	github.com/lib/pq v1.1.1 // indirect
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/pkg/errors v0.8.1 // indirect
