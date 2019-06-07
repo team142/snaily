@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/jackc/pgx"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/bus"
 	"github.com/team142/snaily/controller"
@@ -11,7 +10,6 @@ import (
 	"github.com/team142/snaily/utils"
 	"io/ioutil"
 	"net/http"
-	"sync"
 )
 
 func handleCreateItem(w http.ResponseWriter, r *http.Request, ID string) {
@@ -98,116 +96,12 @@ func handleGetItem(w http.ResponseWriter, r *http.Request, ID string) {
 }
 
 func handleGetMyItems(w http.ResponseWriter, r *http.Request, ID string) {
-	var err error
-
-	var conn *pgx.Conn
-	if conn, err = db.Connect(db.DefaultConfig); err != nil {
-		logrus.Errorln(err)
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
-		return
-	}
-	defer conn.Close()
-
-	user, err := controller.GetUser(conn, ID)
+	result, err := bus.GetMyItems(ID)
 	if err != nil {
 		logrus.Errorln(err)
-		http.Error(w, "Authentication error", http.StatusBadRequest)
+		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
 	}
-
-	result := model.MessageMyItemsResponseV1{
-		CreatedByMe:  make([]*model.Item, 0),
-		WaitingForMe: make([]*model.Item, 0),
-		Users:        make(model.MessageUsersV1, 0),
-	}
-
-	var wgItems sync.WaitGroup
-
-	in := make(chan string, 10)
-
-	go func(in chan string) {
-		var conn *pgx.Conn
-		if conn, err = db.Connect(db.DefaultConfig); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database connection error", http.StatusInternalServerError)
-			return
-		}
-		defer conn.Close()
-		for ID := range in {
-			if !result.Users.Contains(ID) {
-				u, err := controller.GetUser(conn, ID)
-				if err != nil {
-					logrus.Errorln(err)
-					wgItems.Done()
-					continue
-				}
-				if u == nil {
-					logrus.Errorln("Could not find ID: ", ID)
-					wgItems.Done()
-					continue
-				}
-				result.Users = append(result.Users, u.GetUserMessage())
-			}
-			wgItems.Done()
-		}
-
-	}(in)
-
-	wgItems.Add(1)
-	go func() {
-		var conn *pgx.Conn
-		if conn, err = db.Connect(db.DefaultConfig); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database connection error", http.StatusInternalServerError)
-			return
-		}
-		defer conn.Close()
-
-		var out chan *model.Item
-		if out, err = controller.GetItemsByCreatedBy(conn, user.ID); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database query error", http.StatusInternalServerError)
-			return
-		}
-		for item := range out {
-			wgItems.Add(1)
-			in <- item.WaitingFor
-			wgItems.Add(1)
-			in <- item.CreatedBy
-			result.CreatedByMe = append(result.CreatedByMe, item)
-		}
-		wgItems.Done()
-	}()
-
-	wgItems.Add(1)
-	go func() {
-		var conn *pgx.Conn
-		if conn, err = db.Connect(db.DefaultConfig); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database connection error", http.StatusInternalServerError)
-			return
-		}
-		defer conn.Close()
-
-		var out chan *model.Item
-		if out, err = controller.GetItemsByWaitingFor(conn, user.ID); err != nil {
-			logrus.Errorln(err)
-			http.Error(w, "Database query error", http.StatusInternalServerError)
-			return
-		}
-		for item := range out {
-			wgItems.Add(1)
-			in <- item.WaitingFor
-			wgItems.Add(1)
-			in <- item.CreatedBy
-			result.WaitingForMe = append(result.WaitingForMe, item)
-		}
-		wgItems.Done()
-	}()
-
-	wgItems.Wait()
-	close(in)
-
 	if err = utils.WriteXToWriter(w, result); err != nil {
 		logrus.Errorln(err)
 	}

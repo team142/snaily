@@ -4,11 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/just1689/entity-sync/entitysync"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/api"
 	"github.com/team142/snaily/db"
 	"github.com/team142/snaily/email"
 	"github.com/team142/snaily/model"
+	"github.com/team142/snaily/sync"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -26,6 +28,7 @@ var DatabaseUser = flag.String("pguser", "snaily", "PG username")
 var DatabasePassword = flag.String("pgpassword", "snaily", "PG password")
 var DatabaseDatabase = "madast"
 var Port = flag.Uint64("pgport", 5000, "PG port")
+var nsqAddr = flag.String("nsqd", "nsqd:4150", "The address of the nsq daemon")
 
 func main() {
 	flag.Parse()
@@ -34,6 +37,13 @@ func main() {
 	setDBDefaultConfig()
 
 	router := mux.NewRouter()
+
+	config := entitysync.Config{
+		NSQAddr: *nsqAddr,
+		Mux:     router,
+	}
+	es := entitysync.Setup(config)
+	sync.SetupSync(es)
 
 	//Handles all API calls
 	router.PathPrefix("/api").HandlerFunc(api.HandleIncoming)
