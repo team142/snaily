@@ -26,6 +26,8 @@ func InsertItem(conn *pgx.Conn, item *model.Item) (err error) {
 	if err != nil {
 		logrus.Errorln(err)
 	}
+	NotifyChangeHome(item.CreatedBy)
+	NotifyChangeHome(item.WaitingFor)
 	return
 }
 
