@@ -21,10 +21,10 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request, ID string) {
 		logrus.Errorln(err)
 		return
 	}
-	item.CreatedBy = ID
 
 	var created bool
-	if created, err = bus.CreateItem(item); err != nil {
+
+	if created, err = bus.CreateItem(item, ID); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		logrus.Errorln(err)
 		return

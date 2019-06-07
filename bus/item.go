@@ -8,8 +8,9 @@ import (
 	"github.com/team142/snaily/model"
 )
 
-func CreateItem(item *model.Item) (created bool, err error) {
+func CreateItem(item *model.Item, createdBy string) (created bool, err error) {
 	item.GenerateID()
+	item.CreatedBy = createdBy
 
 	conn, err := db.Connect(db.DefaultConfig)
 	if err != nil {
