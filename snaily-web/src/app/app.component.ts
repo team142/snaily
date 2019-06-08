@@ -12,6 +12,7 @@ import {WS} from './util/ws';
 export class AppComponent {
   title = 'py-portal';
 
+  private version = 'v0.42';
 
   constructor(private router: Router) {
   }
