@@ -2,6 +2,7 @@ import {UserState} from '../model/state/userState';
 
 export class WS {
   static socket;
+  static connected = false;
 
   static getWSUrl(): string {
     let url = '';
@@ -38,6 +39,7 @@ export class WS {
     WS.socket = new WebSocket(url);
 
     WS.socket.onopen = function (e) {
+      WS.connected = true;
       console.log('[open] Connection established, send -> server');
       const action = {
         action: 'secret',
@@ -63,6 +65,7 @@ export class WS {
     };
 
     WS.socket.onclose = function (event) {
+      WS.connected = false;
       if (event.wasClean) {
         console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
       } else {
