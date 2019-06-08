@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {UserState} from './model/state/userState';
 import {Router} from '@angular/router';
+import {WS} from './util/ws';
 
 @Component({
   selector: 'app-root',
@@ -25,5 +26,8 @@ export class AppComponent {
     this.router.navigate(link);
   }
 
+  public isGreen(): boolean {
+    return WS.connected;
+  }
 
 }
