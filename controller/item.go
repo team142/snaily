@@ -6,6 +6,9 @@ import (
 	"github.com/team142/snaily/model"
 )
 
+var NotifyChangeHome func(userID string)
+var NotifyChangeItems func(ID string)
+
 func InsertItem(conn *pgx.Conn, item *model.Item) (err error) {
 	_, err = conn.Exec("insert into madast.items values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
 		item.ID,
@@ -23,6 +26,8 @@ func InsertItem(conn *pgx.Conn, item *model.Item) (err error) {
 	if err != nil {
 		logrus.Errorln(err)
 	}
+	NotifyChangeHome(item.CreatedBy)
+	NotifyChangeHome(item.WaitingFor)
 	return
 }
 
