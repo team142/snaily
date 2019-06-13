@@ -1,18 +1,6 @@
 #
-# Multi-stage build for Angular app and Go app
+# Multi-stage build Go app
 #
-
-
-# Build Angular app in a node container
-FROM node:12-alpine as ngbuilder
-RUN npm install -g @angular/cli
-RUN mkdir /src
-WORKDIR /src
-COPY snaily-web /src/snaily-web
-WORKDIR /src/snaily-web
-#RUN chmod -R 777 ./
-RUN npm i
-RUN ng build
 
 # Build Golang app in Go container
 FROM golang:1.12.4-alpine3.9 as builder
@@ -32,5 +20,4 @@ COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /src/app /app
 USER nobody:nobody
-COPY --chown=nobody:nobody --from=ngbuilder /src/snaily-web/dist/snaily-web /snaily-web
-ENTRYPOINT ["/app", "-container=true", "-pgport=5432", "-pghost=spg", "-nsqd=nsq_nsqd:4150"]
+ENTRYPOINT ["/app", "-pgport=5432", "-pghost=spg", "-nsqd=nsq_nsqd:4150"]
