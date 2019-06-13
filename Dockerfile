@@ -20,4 +20,4 @@ COPY --from=builder /user/group /user/passwd /etc/
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /src/app /app
 USER nobody:nobody
-ENTRYPOINT ["/app", "-pgport=5432", "-pghost=spg", "-nsqd=nsq_nsqd:4150"]
+ENTRYPOINT ["/app", "-addrToProxy=http://snaily-static:80", "-pgport=5432", "-pghost=spg", "-nsqd=nsq_nsqd:4150"]
