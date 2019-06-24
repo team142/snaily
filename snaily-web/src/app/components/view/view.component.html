@@ -17,6 +17,10 @@
       <button (click)="close()" type="button" class="btn btn-warning">Close</button>
     </p>
 
+    <p *ngIf="!canClose()" align="right">
+      Closed by <b>{{getClosedBy()}}</b>
+    </p>
+
   </div>
   <div class="card-footer text-muted">
     2 days ago

@@ -61,6 +61,18 @@ export class ViewComponent implements OnInit {
     );
   }
 
+  public getClosedBy(): string {
+    if (this.item.createdByDone === true) {
+      return this.getUserFullName(this.item.createdBy);
+    }
+
+    if (this.item.waitingForDone === true) {
+      return this.getUserFullName(this.item.waitingFor);
+    }
+
+    return '...';
+  }
+
 
   public getUserFullName(id: string): string {
     for (const o of this.users) {
