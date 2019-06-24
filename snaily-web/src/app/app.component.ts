@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {UserState} from './model/state/userState';
 import {Router} from '@angular/router';
 import {WS} from './util/ws';
+import {LoadingState} from './model/state/loading';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,10 @@ export class AppComponent {
   private version = 'v0.42';
 
   constructor(private router: Router) {
+  }
+
+  public isLoading(): boolean {
+    return LoadingState.Loading;
   }
 
   public isLoggedIn(): boolean {

@@ -8,6 +8,7 @@ import {ItemV1} from '../../model/item-v1';
 import {UserV1} from '../../model/user-v1';
 import {WS} from '../../util/ws';
 import {UserState} from '../../model/state/userState';
+import {LoadingState} from '../../model/state/loading';
 
 
 @Component({

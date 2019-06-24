@@ -1,24 +1,11 @@
-<div *ngIf="!loading" class="container">
-  <div class="row">
-    <div class="col-sm">
-      <div *ngIf="waitingForMe.length === 0" class="alert alert-dismissible alert-success">
-        <strong>Well done!</strong> No one is waiting for you.
-      </div>
-    </div>
-    <div class="col-sm">
-      <div *ngIf="createdByMe.length === 0" class="alert alert-dismissible alert-success">
-        <strong>Good news!</strong> You're not waiting for anyone.
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <p align="right">
   <button (click)="refresh()" type="button" class="btn btn-success">Refresh</button>
 </p>
 
-<div *ngIf="waitingForMe.length > 0" class="col-md-12">
-  <h1>People waiting for me</h1>
+<div class="col-md-12">
+  <h1>Waiting</h1>
   <table class="table table-hover">
     <thead>
     <tr class="table-light">
@@ -38,7 +25,7 @@
     <tr class="animated fadeIn" *ngFor="let item of createdByMe">
       <th>DATE</th>
       <td>{{item.title}}</td>
-      <td>{{getUserFullName(item.createdBy)}} &gt; {{getUserFullName(item.waitingFor)}}</td>
+      <td>{{getUserFullName(item.createdBy)}} <b>&gt;</b> {{getUserFullName(item.waitingFor)}}</td>
       <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
     </tbody>
