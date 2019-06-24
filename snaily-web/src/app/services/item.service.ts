@@ -3,6 +3,7 @@ import {ItemV1} from '../model/item-v1';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {UserState} from '../model/state/userState';
+import {MessageID} from '../model/generic';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,26 @@ export class ItemService {
         }
         fail(err);
       });
+  }
+
+  public closeItem(r: MessageID, win: Function, fail: Function): void {
+    const url = window.location.origin + environment.urlCloseItemV1;
+    console.log(url);
+    this.http.post(url, r, {
+        headers: new HttpHeaders().append('key', UserState.getMyKey())
+      }
+    )
+      .toPromise()
+      .then((result) => {
+        win(result);
+      })
+      .catch((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          UserState.logout();
+        }
+        fail(err);
+      });
+
   }
 
 
