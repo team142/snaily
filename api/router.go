@@ -56,6 +56,11 @@ func HandleIncoming(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.URL.Path == "/api/close-item/v1" {
+		handleCloseItem(w, r, ID)
+		return
+	}
+
 	msg := fmt.Sprint("Could not find route for ", r.URL.Path)
 	logrus.Println(msg)
 	w.Write([]byte(msg))

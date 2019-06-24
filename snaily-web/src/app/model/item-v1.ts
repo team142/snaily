@@ -5,6 +5,8 @@ export class ItemV1 {
   body: string;
   createdBy: string;
   waitingFor: string;
+  waitingForDone: boolean;
+  createdByDone: boolean;
 
   constructor() {
     this.id = '';
@@ -13,6 +15,9 @@ export class ItemV1 {
     this.body = '';
     this.createdBy = '';
     this.waitingFor = '';
+    this.waitingForDone = false;
+    this.createdByDone = false;
+
   }
 
 }
