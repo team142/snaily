@@ -12,7 +12,8 @@
   <div class="card-body">
     <p class="card-text">{{item.body}}</p>
 
-    <p align="right">
+
+    <p *ngIf="canClose()" align="right">
       <button (click)="close()" type="button" class="btn btn-warning">Close</button>
     </p>
 

@@ -48,6 +48,7 @@ export class ViewComponent implements OnInit {
     this.itemService.getItem(i, (result) => {
 
         this.item = result.item;
+        console.log(this.item);
         this.users = result.users;
 
       }, (err: HttpErrorResponse) => {
@@ -78,12 +79,14 @@ export class ViewComponent implements OnInit {
     const r = new MessageID();
     r.id = this.item.id;
     this.itemService.closeItem(r, () => {
-      alert('ok');
+      this.load();
     }, (error) => {
       console.log(error);
     });
 
   }
 
-
+  public canClose(): boolean {
+    return (this.item.createdByDone === false && this.item.waitingForDone === false);
+  }
 }
