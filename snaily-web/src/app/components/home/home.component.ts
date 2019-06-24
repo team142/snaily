@@ -134,4 +134,12 @@ export class HomeComponent implements OnInit {
     return s.substring(0, 1) + '.';
   }
 
+  public getRowClass(i: ItemV1): string {
+    if (i.waitingForDone || i.createdByDone) {
+      return 'table-secondary';
+    }
+    return '';
+  }
+
+
 }

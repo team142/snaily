@@ -1,5 +1,3 @@
-
-
 <p align="right">
   <button (click)="refresh()" type="button" class="btn btn-success">Refresh</button>
 </p>
@@ -16,13 +14,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr class="animated fadeIn" *ngFor="let item of waitingForMe">
+    <tr *ngFor="let item of waitingForMe" class="animated fadeIn {{getRowClass(item)}}">
       <th>DATE</th>
       <td>{{item.title}}</td>
       <td>{{getUserFullName(item.createdBy)}} &gt; {{getUserFullName(item.waitingFor)}}</td>
       <td><a class="btn btn-sm btn-outline-primary" href="./view?id={{item.id}}">View</a></td>
     </tr>
-    <tr class="animated fadeIn" *ngFor="let item of createdByMe">
+    <tr *ngFor="let item of createdByMe" class="animated fadeIn {{getRowClass(item)}}">
       <th>DATE</th>
       <td>{{item.title}}</td>
       <td>{{getUserFullName(item.createdBy)}} <b>&gt;</b> {{getUserFullName(item.waitingFor)}}</td>

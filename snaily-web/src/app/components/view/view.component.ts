@@ -48,7 +48,6 @@ export class ViewComponent implements OnInit {
     this.itemService.getItem(i, (result) => {
 
         this.item = result.item;
-        console.log(this.item);
         this.users = result.users;
 
       }, (err: HttpErrorResponse) => {
