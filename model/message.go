@@ -1,13 +1,22 @@
 package model
 
+import (
+	"encoding/json"
+	"github.com/sirupsen/logrus"
+	"io"
+	"io/ioutil"
+)
+
 type MessageNewItemResponseV1 struct {
 	OK bool   `json:"ok"`
 	ID string `json:"id"`
 }
 
-type MessageRegisterResponseV1 struct {
+type MessageOKResponseV1 struct {
 	OK bool `json:"ok"`
 }
+
+type MessageRegisterResponseV1 MessageOKResponseV1
 
 type MessageLoginResponseV1 struct {
 	OK  bool   `json:"ok"`
@@ -42,4 +51,23 @@ type MessageUserV1 struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
+}
+
+type MessageCloseItemResponseV1 struct {
+	ID string `json:"id"`
+}
+
+func ReadCloserToMessageCloseItemResponseV1(body io.ReadCloser) (result *MessageCloseItemResponseV1, err error) {
+	var b []byte
+	b, err = ioutil.ReadAll(body)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	result = &MessageCloseItemResponseV1{}
+	err = json.Unmarshal(b, result)
+	if err != nil {
+		logrus.Errorln(err)
+	}
+	return
 }
