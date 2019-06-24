@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/jackc/pgx"
 	"github.com/sirupsen/logrus"
 	"github.com/team142/snaily/model"
@@ -23,6 +24,26 @@ func InsertItem(conn *pgx.Conn, item *model.Item) (err error) {
 		item.WaitingForDoneDate,
 		item.CreatedByDone,
 		item.CreatedByDoneDate)
+	if err != nil {
+		logrus.Errorln(err)
+	}
+	NotifyChangeHome(item.CreatedBy)
+	NotifyChangeHome(item.WaitingFor)
+	return
+}
+
+func CloseItem(conn *pgx.Conn, item *model.Item, closedBy string) (err error) {
+	sql := "update madast.items set "
+	if item.CreatedBy == closedBy {
+		sql = fmt.Sprint(sql, "waiting_for_done=true, waiting_for_done_date=now() ")
+	} else if item.WaitingFor == closedBy {
+		sql = fmt.Sprint(sql, "created_by_done=true, created_by_done_date=now() ")
+	}
+	sql = fmt.Sprint(sql, " where id=$1")
+
+	_, err = conn.Exec(sql,
+		item.ID,
+	)
 	if err != nil {
 		logrus.Errorln(err)
 	}

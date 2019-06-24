@@ -9,6 +9,7 @@ export const environment = {
   urlNewItemV1: '/api/new-item/v1',
   urlMyItemsV1: '/api/my-items/v1',
   urlGetItemV1: '/api/get-item/v1',
+  urlCloseItemV1: '/api/close-item/v1',
 };
 
 /*

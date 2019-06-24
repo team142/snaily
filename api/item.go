@@ -32,6 +32,20 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request, ID string) {
 
 }
 
+func handleCloseItem(w http.ResponseWriter, r *http.Request, ID string) {
+	m, err := model.ReadCloserToMessageCloseItemResponseV1(r.Body)
+	if err != nil {
+		http.Error(w, "Invalid request or body", http.StatusBadRequest)
+		logrus.Errorln(err)
+		return
+	}
+	ok, err := bus.CloseItem(m.ID, ID)
+	if err := utils.WriteXToWriter(w, model.MessageOKResponseV1{OK: ok}); err != nil {
+		logrus.Errorln(err)
+	}
+
+}
+
 func handleGetItem(w http.ResponseWriter, r *http.Request, ID string) {
 
 	b, err := ioutil.ReadAll(r.Body)

@@ -45,6 +45,29 @@ func CreateItem(item *model.Item, createdBy string) (created bool, err error) {
 
 }
 
+func CloseItem(ID, closedBy string) (ok bool, err error) {
+	var conn *pgx.Conn
+	if conn, err = db.Connect(db.DefaultConfig); err != nil {
+		logrus.Errorln(err)
+		return
+	}
+	defer conn.Close()
+
+	item, err := controller.GetItem(conn, ID)
+	if err != nil {
+		logrus.Errorln(err)
+		return
+	}
+
+	err = controller.CloseItem(conn, item, closedBy)
+	if err != nil {
+		return
+	}
+
+	ok = true
+	return
+}
+
 func GetMyItems(ID string) (result model.MessageMyItemsResponseV1, err error) {
 
 	var conn *pgx.Conn

@@ -5,6 +5,7 @@ import {ItemV1} from '../../model/item-v1';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Messages} from '../../util/Messages';
 import {UserV1} from '../../model/user-v1';
+import {MessageID} from '../../model/generic';
 
 declare var Swal: any;
 
@@ -45,7 +46,6 @@ export class ViewComponent implements OnInit {
     const i = new ItemV1();
     i.id = this.id;
     this.itemService.getItem(i, (result) => {
-        console.log(result);
 
         this.item = result.item;
         this.users = result.users;
@@ -58,6 +58,18 @@ export class ViewComponent implements OnInit {
         }
       }
     );
+  }
+
+  public getClosedBy(): string {
+    if (this.item.createdByDone === true) {
+      return this.getUserFullName(this.item.createdBy);
+    }
+
+    if (this.item.waitingForDone === true) {
+      return this.getUserFullName(this.item.waitingFor);
+    }
+
+    return '...';
   }
 
 
@@ -74,5 +86,18 @@ export class ViewComponent implements OnInit {
     return '?';
   }
 
+  public close(): void {
+    const r = new MessageID();
+    r.id = this.item.id;
+    this.itemService.closeItem(r, () => {
+      this.load();
+    }, (error) => {
+      console.log(error);
+    });
 
+  }
+
+  public canClose(): boolean {
+    return (this.item.createdByDone === false && this.item.waitingForDone === false);
+  }
 }

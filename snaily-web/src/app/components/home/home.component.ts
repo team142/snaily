@@ -8,6 +8,7 @@ import {ItemV1} from '../../model/item-v1';
 import {UserV1} from '../../model/user-v1';
 import {WS} from '../../util/ws';
 import {UserState} from '../../model/state/userState';
+import {LoadingState} from '../../model/state/loading';
 
 
 @Component({
@@ -110,16 +111,35 @@ export class HomeComponent implements OnInit {
 
 
   public getUserFullName(id: string): string {
+    if (UserState.getMyID() === id) {
+      return 'You';
+    }
+
     for (const o of this.users) {
       if (o.id === id) {
         if (o.firstName === '' || o.lastName === '') {
           return o.email;
         }
-        const r = o.firstName + ' ' + o.lastName;
+        const r = this.first(o.firstName) + ' ' + o.lastName;
         return r;
       }
     }
     return '?';
   }
+
+  private first(s: string): string {
+    if (s == null || s.length === 0) {
+      return '';
+    }
+    return s.substring(0, 1) + '.';
+  }
+
+  public getRowClass(i: ItemV1): string {
+    if (i.waitingForDone || i.createdByDone) {
+      return 'table-secondary';
+    }
+    return '';
+  }
+
 
 }
