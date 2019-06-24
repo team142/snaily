@@ -53,7 +53,9 @@ type MessageUserV1 struct {
 	Email     string `json:"email"`
 }
 
-type MessageCloseItemResponseV1 struct {
+type MessageCloseItemResponseV1 MessageID
+
+type MessageID struct {
 	ID string `json:"id"`
 }
 
